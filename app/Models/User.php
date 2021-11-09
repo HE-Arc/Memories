@@ -41,4 +41,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * return all memories of the current user
+     */
+    public function memories(){
+        return $this->hasMany(Memory::class);
+    }
 }

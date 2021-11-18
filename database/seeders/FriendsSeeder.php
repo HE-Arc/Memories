@@ -15,14 +15,16 @@ class FriendsSeeder extends Seeder
     public function run()
     {
         DB::table('friends')->insert([
-            'user_id1' => 3,
-            'user_id2' => 4,
-            'status' => 'confirmed',
-        ],
-        [
-            'user_id1' => 4,
-            'user_id2' => 5,
-            'status' => 'pending',
+            [
+                'user_id1' => 3,
+                'user_id2' => 4,
+                'status' => 'confirmed',
+            ],
+            [
+                'user_id1' => 4,
+                'user_id2' => 5,
+                'status' => 'pending',
+            ]
         ]);
     }
 }

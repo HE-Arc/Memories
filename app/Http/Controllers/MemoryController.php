@@ -30,20 +30,7 @@ class MemoryController extends Controller
      */
     public function create()
     {
-       // return view('memories.create');
-       return redirect()->route('memories.index')
-                        ->with('warning','Memory warning successfully');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createtmp()
-    {
-       // return view('memories.create');
-       return redirect()->route('memories.create');
+       return inertia('Memories/Create');
     }
 
     /**
@@ -55,6 +42,8 @@ class MemoryController extends Controller
     public function store(Request $request)
     {
         //
+        return redirect()->route('memories.index')
+                        ->with('warning','Memory warning successfully');
     }
 
     /**

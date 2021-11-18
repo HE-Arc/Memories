@@ -1,39 +1,55 @@
 <template>
-    <Head title="Memories"/>
+    <Head title="Amis"/>
 
     <breeze-authenticated-layout>
         <template #header>
             <h2 class="h4 font-weight-bold">
-                Memories
+                Amis
             </h2>
         </template>
         <!-- Page content here-->
 
+        <h2>Nouvelle demande d'ami</h2>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Rechercher...">
+            <div class="input-group-append">
+                <button class="btn btn-success" type="button">Ajouter</button>
+            </div>
+        </div>
 
-        <h1>Memories 2000</h1>
-
-        <Link :href="route('memories.create')" class="btn btn-outline-success mb-2">create a new memory</Link>
-
+        <h2>Mes amis</h2>
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Creation date</th>
-                    <th class="text-center" scope="col">Action</th>
+                    <th scope="col">Nom</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr v-for="memory in memories" :key="memory.id">
-                    <td>{{ memory.name }}</td>
-                    <td>{{ parseDate(memory.created_at) }}</td>
-                    <td class="text-center"><Link :href="route('memories.show', memory.id)" class="btn btn-info"><i class="fa fa-pencil-square-o"></i></Link>
-                    <button @click="destroy(memory.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                    </td>
+                <tr v-for="friendConfirmed in friendsConfirmed" :key="friendConfirmed.id">
+                    <td>{{ friendConfirmed.name }}</td>
+                    <button @click="destroy(friend.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
                 </tr>
-
             </tbody>
         </table>
+
+        <h2>Demande en attente</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="friendPending in friendsPending" :key="friendPending.id">
+                    <td>{{ friendPending.name }}</td>
+                    <button class="btn btn-success"><i class="fa fa-plus-square"></i></button>
+                    <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                </tr>
+            </tbody>
+        </table>
+
     </breeze-authenticated-layout>
 
 </template>
@@ -43,6 +59,8 @@ import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
 import { Head, Link } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
 import moment from 'moment'
+import FlashMessages from '@/Components/Tools/FlashMessages.vue'
+
 
 
 export default {
@@ -50,17 +68,15 @@ export default {
     BreezeAuthenticatedLayout,
     Head,
     Link,
+    FlashMessages
+
   },
     props: [
-      "memories"
+      "friendsConfirmed",
+      "friendsPending"
   ],
   methods: {
-      destroy(id) {
-          Inertia.delete(route('memories.destroy', id));
-      },
-      parseDate: function (date) {
-        return moment(date).format('YYYY-MM-DD HH:mm:ss');
-        },
+
   }
 }
 </script>

@@ -16,13 +16,13 @@ class FriendsSeeder extends Seeder
     {
         DB::table('friends')->insert([
             [
-                'user_id1' => 3,
-                'user_id2' => 4,
+                'user_id1' => 1,
+                'user_id2' => 2,
                 'status' => 'confirmed',
             ],
             [
-                'user_id1' => 4,
-                'user_id2' => 5,
+                'user_id1' => 2,
+                'user_id2' => 3,
                 'status' => 'pending',
             ]
         ]);

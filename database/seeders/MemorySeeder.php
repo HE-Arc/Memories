@@ -21,11 +21,18 @@ class MemorySeeder extends Seeder
         $latitude = 40;
 
         DB::table('memories')->insert([
-            'name' => Str::random(40),
-            'user_id' => 1,
-            'description' => Str::random(40),
-            'location' => DB::raw('ST_SRID(Point('.$longitude.', '.$latitude.'), 4326)'),
-            //'location' => new Point($latitude, $longitude, $srid = 4326)
+            [
+                'name' => "Voyage au bois du petit château",
+                'user_id' => 1,
+                'description' => "Une magnifique description",
+                'location' => DB::raw('ST_SRID(Point('.$longitude.', '.$latitude.'), 4326)'),
+            ],
+            [
+                'name' => "Photos de la campagne",
+                'user_id' => 2,
+                'description' => "Une super belle description d'un memory absolument magnifique",
+                'location' => DB::raw('ST_SRID(Point('.$longitude.', '.$latitude.'), 4326)'),
+            ],
         ]);
     }
 }

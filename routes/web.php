@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\MemoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -25,11 +26,14 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::resource(
+    '/memories',
+    MemoryController::class
+)->middleware(['auth', 'verified']);
 
+Route::resource(
+    '/friends',
+    FriendsController::class
+)->middleware(['auth', 'verified']);
 
-Route::resource('/memories', MemoryController::class);
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

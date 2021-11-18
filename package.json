@@ -34,6 +34,7 @@
     },
     "dependencies": {
         "@fortawesome/vue-fontawesome": "^3.0.0-5",
-        "vue-moment": "^4.1.0"
+        "vue-moment": "^4.1.0",
+        "vue3-editor": "^0.1.0-alpha.3"
     }
 }

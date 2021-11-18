@@ -41,9 +41,24 @@ class MemoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        return redirect()->route('memories.index')
-                        ->with('warning','Memory warning successfully');
+        dd($request);
+       $request->validate([
+            'name' => 'required|min:5|max:30',
+        ]);
+
+        $userid = $request->user()->id;
+
+
+        $memory = new Memory();
+        $memory->name = $request->name;
+        $memory->user_id = $userid;
+        $memory->visited_date = $request->visited_date;
+        $memory->location = new Point(10,20,4326);
+        $memory->save();
+
+        return inertia('Memory/Show',compact('memory'))
+                        ->with('success','Memory created successfully');
+
     }
 
     /**

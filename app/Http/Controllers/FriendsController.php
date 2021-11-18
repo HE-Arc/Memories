@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Friends;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FriendsController extends Controller
@@ -14,7 +15,11 @@ class FriendsController extends Controller
      */
     public function index()
     {
-        //
+        $id = auth()->id();
+        $user = User::find($id);
+        $friendsConfirmed = $user->friendsConfirmed;
+        $friendsPending = $user->friendsPending;
+        return inertia('Friends/Index',compact('friendsConfirmed', 'friendsPending'));
     }
 
     /**

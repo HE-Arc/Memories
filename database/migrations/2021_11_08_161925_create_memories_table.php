@@ -16,7 +16,6 @@ class CreateMemoriesTable extends Migration
         Schema::create('memories', function (Blueprint $table) {
             $table->id();           //primary key
             $table->timestamps();   //audit field
-            $table->bigInteger('user_id')->unsigned();   //foreign key
             $table->string('name');
             $table->timestamp('visited_date')->useCurrent();
             $table->point('location',4326); // srid 4326 represents spatial data using longitude and latitude coordinates on the Earth's surface as defined in the WGS84 standard
@@ -25,19 +24,11 @@ class CreateMemoriesTable extends Migration
             //https://www.cockroachlabs.com/docs/stable/srid-4326.html
 
             //index
-            $table->spatialIndex('location');
+             $table->spatialIndex('location');
 
 
 
             //add foreign key
-            $table->foreign('user_id')
-                    ->references('id')
-                    ->on('users')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
-
-
-           $table->unique(['name','user_id'],'uk1');
         });
     }
 

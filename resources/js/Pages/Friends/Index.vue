@@ -4,15 +4,14 @@
     <breeze-authenticated-layout>
         <template #header>
             <h2 class="h4 font-weight-bold">
-                Memories 3
+                Memories
             </h2>
         </template>
         <!-- Page content here-->
 
 
-        <h1>Memories</h1>
+        <h1>Memories 2000</h1>
 
-        <FlashMessages/>
         <Link :href="route('memories.create')" class="btn btn-outline-success mb-2">create a new memory</Link>
 
         <table class="table">
@@ -44,8 +43,6 @@ import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
 import { Head, Link } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
 import moment from 'moment'
-import FlashMessages from '@/Components/Tools/FlashMessages.vue'
-
 
 
 export default {
@@ -53,8 +50,6 @@ export default {
     BreezeAuthenticatedLayout,
     Head,
     Link,
-    FlashMessages
-
   },
     props: [
       "memories"

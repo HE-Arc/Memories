@@ -12,15 +12,16 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
  */
 class Memory extends Model
 {
-    use HasFactory, SpatialTrait;
+    use HasFactory;
+    use SpatialTrait;
 
     protected $spatialFields = [
         'location'
     ];
 
-    /**
+    /*
      *get memory's user
-     */
+    */
     public function user() {
         $this->belongsTo(User::class);
     }

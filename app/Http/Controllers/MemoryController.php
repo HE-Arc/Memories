@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Memory;
 use App\Models\User;
+
 use Illuminate\Http\Request;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 
@@ -16,10 +17,10 @@ class MemoryController extends Controller
      */
     public function index()
     {
-        $users = User::with('memories')->get();
-        $mem= Memory::with('user')->get();
-        var_dump($mem);
-        //return inertia('Memories/Index',['memories' => $memories]);
+        $id = auth()->id();
+        $user = User::find($id);
+        $memories = $user->memories;
+        return inertia('Memories/Index',compact('memories'));
     }
 
     /**
@@ -29,13 +30,20 @@ class MemoryController extends Controller
      */
     public function create()
     {
-        $place1 = new Memory();
-        $place1->name = 'bob memory';
-        $place1->user_id = 2;
+       // return view('memories.create');
+       return redirect()->route('memories.index')
+                        ->with('warning','Memory warning successfully');
+    }
 
-        // saving a point with SRID 4326 (WGS84 spheroid)
-        $place1->location = new Point(40.7484404, -73.9878441, 4326);	// (lat, lng, srid)
-        $place1->save();
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createtmp()
+    {
+       // return view('memories.create');
+       return redirect()->route('memories.create');
     }
 
     /**
@@ -89,8 +97,13 @@ class MemoryController extends Controller
      * @param  \App\Models\Memory  $memory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Memory $memory)
+    public function destroy($id)
     {
-        //
+        $memory = Memory::find($id);
+        $memory->delete();
+
+        return redirect()->route('memories.index')
+                        ->with('success','Memory deleted successfully');
+
     }
 }

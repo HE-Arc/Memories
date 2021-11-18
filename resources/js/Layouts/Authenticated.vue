@@ -18,6 +18,9 @@
             <breeze-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
               Dashboard
             </breeze-nav-link>
+            <breeze-nav-link :href="route('memories.index')" :active="route().current('memories.index')">
+              Memories
+            </breeze-nav-link>
           </ul>
 
           <!-- Right Side Of Navbar -->

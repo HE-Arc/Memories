@@ -3,7 +3,7 @@
     <input
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        type="text"
+        :type="inputType"
         class="form-control"
         :class="formError ? 'is-invalid' : ''"
         :id="inputId"
@@ -17,7 +17,7 @@ export default {
     components: {
         BreezeInputError,
     },
-    props: ['modelValue', 'inputId', 'labelText', 'formError'],
+    props: ['modelValue', 'inputId', 'labelText', 'formError', 'inputType'],
     emits: ['update:modelValue'],
 }
 </script>

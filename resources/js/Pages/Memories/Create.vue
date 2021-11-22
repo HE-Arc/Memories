@@ -7,12 +7,11 @@
     </template>
 
     <Link :href="route('memories.index')" class="btn btn-primary mb-2"
-      >Retour</Link
+      >Back</Link
     >
 
     <form @submit.prevent="form.post(route('memories.store'))">
-      <div class="row">
-        <div class="col-12 col-lg-6 offset-0 offset-lg-3">
+      <div class="form-group row">
           <div class="card">
             <div class="card-body">
               <div class="form-row">
@@ -51,9 +50,9 @@
                   <div class="form-group col-12">
                     <SelectPrivacy v-model="form.publishing" :selectId="'privacy'" />
                   </div>
-                </div>
-
-                <CustomMap/>
+                </div><br>
+                <label>Choose a location :</label>
+                <CustomMap v-model="form.latlng"/>
 
                 <breeze-validation-errors class="mt-3" />
 
@@ -62,13 +61,12 @@
                   class="btn btn-outline-success mt-4"
                   :disabled="form.processing"
                 >
-                  Send
+                  Create
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </form>
   </breeze-authenticated-layout>
 </template>
@@ -81,6 +79,7 @@ import CustomMap from "@/Components/Form/CustomMap.vue";
 import SelectPrivacy from "@/Components/Form/SelectPrivacy.vue";
 import BreezeValidationErrors from "@/Components/ValidationErrors.vue";
 import { VueEditor } from "vue3-editor";
+import Label from '@/Components/Label.vue';
 export default {
   components: {
     BreezeAuthenticatedLayout,
@@ -91,6 +90,7 @@ export default {
     VueEditor,
     SelectPrivacy,
     CustomMap,
+    Label,
   },
   props: [],
   data() {
@@ -100,6 +100,7 @@ export default {
         visited_date: null,
         content: null,
         publishing: "public",
+        latlng: null,
       }),
       customToolbar: [
         [{ font: [] }],

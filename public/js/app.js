@@ -22442,22 +22442,65 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "LeafletMap",
   components: {},
-  props: [],
+  props: ['latlng'],
+  emits: ['update:latlng'],
   data: function data() {
     return {
-      map: null
+      map: null,
+      marker: null,
+      currentPosMarker: null,
+      latlng: null,
+      //https://github.com/pointhi/leaflet-color-markers
+      greenIcon: new (leaflet__WEBPACK_IMPORTED_MODULE_1___default().Icon)({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      }),
+      redIcon: new (leaflet__WEBPACK_IMPORTED_MODULE_1___default().Icon)({
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      })
     };
   },
   mounted: function mounted() {
+    var _this = this;
+
     this.map = leaflet__WEBPACK_IMPORTED_MODULE_1___default().map("mapContainer");
     leaflet__WEBPACK_IMPORTED_MODULE_1___default().tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
+    this.map.on('click', function (e) {
+      _this.latlng = [e.latlng.lat, e.latlng.lng];
+
+      if (_this.marker == null) {
+        _this.marker = leaflet__WEBPACK_IMPORTED_MODULE_1___default().marker(_this.latlng, {
+          icon: _this.greenIcon
+        }).addTo(_this.map);
+      } else {
+        _this.marker.setLatLng(_this.latlng).update();
+      }
+    });
     this.map.locate({
       setView: true,
-      maxZoom: 20,
+      maxZoom: 10,
       enableHighAccuracy: true
     });
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        _this.latlng = [position.coords.latitude, position.coords.longitude];
+        _this.currentPosMarker = leaflet__WEBPACK_IMPORTED_MODULE_1___default().marker(_this.latlng, {
+          icon: _this.redIcon
+        }).addTo(_this.map);
+      });
+    }
   },
   onBeforeUnmount: function onBeforeUnmount() {
     if (this.map) {
@@ -23097,6 +23140,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/Components/ValidationErrors.vue */ "./resources/js/Components/ValidationErrors.vue");
 /* harmony import */ var vue3_editor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue3-editor */ "./node_modules/vue3-editor/dist/vue3-editor.common.js");
 /* harmony import */ var vue3_editor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vue3_editor__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _Components_Label_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/Components/Label.vue */ "./resources/js/Components/Label.vue");
+
 
 
 
@@ -23113,7 +23158,8 @@ __webpack_require__.r(__webpack_exports__);
     BreezeValidationErrors: _Components_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
     VueEditor: vue3_editor__WEBPACK_IMPORTED_MODULE_6__.VueEditor,
     SelectPrivacy: _Components_Form_SelectPrivacy_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
-    CustomMap: _Components_Form_CustomMap_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    CustomMap: _Components_Form_CustomMap_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    Label: _Components_Label_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
   },
   props: [],
   data: function data() {
@@ -23122,7 +23168,8 @@ __webpack_require__.r(__webpack_exports__);
         name: null,
         visited_date: null,
         content: null,
-        publishing: "public"
+        publishing: "public",
+        latlng: null
       }),
       customToolbar: [[{
         font: []
@@ -23468,9 +23515,18 @@ var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_3 = [_hoisted_2];
+var _hoisted_3 = ["value", "type", "id"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, _hoisted_3);
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    value: $data.latlng,
+    onInput: _cache[0] || (_cache[0] = function ($event) {
+      return _ctx.$emit('update:latlng', $event.target.value);
+    }),
+    type: _ctx.inputType,
+    id: _ctx.inputId
+  }, null, 40
+  /* PROPS, HYDRATE_EVENTS */
+  , _hoisted_3)]);
 }
 
 /***/ }),
@@ -24925,62 +24981,68 @@ var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 /* HOISTED */
 );
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Retour");
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Back");
 
 var _hoisted_3 = {
-  "class": "row"
+  "class": "form-group row"
 };
 var _hoisted_4 = {
-  "class": "col-12 col-lg-6 offset-0 offset-lg-3"
-};
-var _hoisted_5 = {
   "class": "card"
 };
-var _hoisted_6 = {
+var _hoisted_5 = {
   "class": "card-body"
 };
-var _hoisted_7 = {
+var _hoisted_6 = {
   "class": "form-row"
+};
+var _hoisted_7 = {
+  "class": "form-group col-12"
 };
 var _hoisted_8 = {
-  "class": "form-group col-12"
-};
-var _hoisted_9 = {
   "class": "form-row"
 };
-var _hoisted_10 = {
+var _hoisted_9 = {
   "class": "form-group col-12"
 };
-var _hoisted_11 = {
+var _hoisted_10 = {
   "class": "form-row"
 };
 
-var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
 /* HOISTED */
 );
 
-var _hoisted_13 = {
+var _hoisted_12 = {
   "class": "form-group col-12"
 };
 
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
   "for": "description"
 }, "Description", -1
 /* HOISTED */
 );
 
-var _hoisted_15 = {
+var _hoisted_14 = {
   "class": "form-row"
 };
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
 /* HOISTED */
 );
 
-var _hoisted_17 = {
+var _hoisted_16 = {
   "class": "form-group col-12"
 };
-var _hoisted_18 = ["disabled"];
+
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
+/* HOISTED */
+);
+
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Choose a location :", -1
+/* HOISTED */
+);
+
+var _hoisted_19 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Head = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Head");
 
@@ -25018,10 +25080,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, 8
       /* PROPS */
       , ["href"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
-        onSubmit: _cache[4] || (_cache[4] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+        onSubmit: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
           return $data.form.post(_ctx.route('memories.store'));
         }, ["prevent"]))
-      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputLabel, {
+      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputLabel, {
         modelValue: $data.form.name,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
           return $data.form.name = $event;
@@ -25031,7 +25093,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         formError: $data.form.errors.title
       }, null, 8
       /* PROPS */
-      , ["modelValue", "formError"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputLabel, {
+      , ["modelValue", "formError"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_InputLabel, {
         modelValue: $data.form.visited_date,
         "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
           return $data.form.visited_date = $event;
@@ -25042,7 +25104,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         inputType: 'date'
       }, null, 8
       /* PROPS */
-      , ["modelValue", "formError"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_vue_editor, {
+      , ["modelValue", "formError"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_vue_editor, {
         modelValue: $data.form.content,
         "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
           return $data.form.content = $event;
@@ -25051,7 +25113,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         editorToolbar: $data.customToolbar
       }, null, 8
       /* PROPS */
-      , ["modelValue", "editorToolbar"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SelectPrivacy, {
+      , ["modelValue", "editorToolbar"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_SelectPrivacy, {
         modelValue: $data.form.publishing,
         "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
           return $data.form.publishing = $event;
@@ -25059,15 +25121,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         selectId: 'privacy'
       }, null, 8
       /* PROPS */
-      , ["modelValue"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_CustomMap), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_breeze_validation_errors, {
+      , ["modelValue"])])]), _hoisted_17, _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_CustomMap, {
+        modelValue: $data.form.latlng,
+        "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+          return $data.form.latlng = $event;
+        })
+      }, null, 8
+      /* PROPS */
+      , ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_breeze_validation_errors, {
         "class": "mt-3"
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "submit",
         "class": "btn btn-outline-success mt-4",
         disabled: $data.form.processing
-      }, " Send ", 8
+      }, " Create ", 8
       /* PROPS */
-      , _hoisted_18)])])])])])], 32
+      , _hoisted_19)])])])])], 32
       /* HYDRATE_EVENTS */
       )];
     }),
@@ -32625,7 +32694,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#mapContainer[data-v-13a7878b] {\n    width: 45vw;\n    height: 45vh;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#mapContainer[data-v-13a7878b] {\n  width: 45vw;\n  height: 45vh;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

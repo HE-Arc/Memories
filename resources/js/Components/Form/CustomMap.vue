@@ -3,10 +3,9 @@
     <div class="container border-solid-black" id="mapContainer"></div>
      <input
         :value="latlng"
-        @input="$emit('update:latlng', $event.target.value)"
         :type="inputType"
         :id="inputId"
-
+        hidden
     >
   </div>
 </template>
@@ -15,12 +14,16 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import LeafletSearch from "leaflet-search";
+
+
+
 
 export default {
   name: "LeafletMap",
   components: {},
-  props: ['latlng'],
-  emits: ['update:latlng'],
+  props: ['modelValue'],
+  emits: ['update:modelValue'],
   data() {
     return {
       map: null,
@@ -54,6 +57,19 @@ export default {
 
     this.map = L.map("mapContainer");
 
+      this.map.addControl(
+      new L.Control.Search({
+        url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
+        jsonpParam: "json_callback",
+        propertyName: "display_name",
+        propertyLoc: ["lat", "lon"],
+        marker: L.circleMarker([0, 0], { radius: 30 }),
+        autoCollapse: true,
+        autoType: true,
+        minLength: 2
+      })
+    );
+
 
     L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
       attribution:
@@ -62,6 +78,7 @@ export default {
 
     this.map.on('click', e => {
         this.latlng  = [e.latlng.lat,e.latlng.lng];
+        this.$emit('update:modelValue',this.latlng);
 
         if(this.marker == null)
         {
@@ -84,6 +101,7 @@ export default {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         this.latlng = [position.coords.latitude,position.coords.longitude];
+        this.$emit('update:modelValue',this.latlng);
         this.currentPosMarker = L.marker(this.latlng, {
           icon: this.redIcon,
         }).addTo(this.map);
@@ -105,4 +123,6 @@ export default {
   width: 45vw;
   height: 45vh;
 }
+@import "~leaflet-search/src/leaflet-search.css";
+
 </style>

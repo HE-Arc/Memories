@@ -56,6 +56,7 @@
 
     <!-- Page Content -->
     <main class="container my-5">
+      <FlashMessages/>
       <slot />
     </main>
   </div>
@@ -67,6 +68,7 @@ import BreezeDropdown from '@/Components/Dropdown.vue'
 import BreezeDropdownLink from '@/Components/DropdownLink.vue'
 import BreezeNavLink from '@/Components/NavLink.vue'
 import { Link } from '@inertiajs/inertia-vue3'
+import FlashMessages from '@/Components/Tools/FlashMessages.vue'
 
 export default {
   components: {
@@ -75,6 +77,7 @@ export default {
     BreezeDropdownLink,
     BreezeNavLink,
     Link,
+    FlashMessages
   },
 
   data() {

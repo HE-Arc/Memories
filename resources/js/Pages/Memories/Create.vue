@@ -99,7 +99,7 @@ export default {
         name: null,
         visited_date: null,
         content: null,
-        publishing: "public",
+        publishing: "private",
         latlng: null,
       }),
       customToolbar: [

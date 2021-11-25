@@ -15,8 +15,8 @@ class AddForeignKeyOnFriendsTable extends Migration
     {
         Schema::table('friends', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('friend_id')->constrained()->onDelete('cascade');
-            $table->unique(['user_id1','friend_id'],'uk1');
+            $table->foreignId('friend_id')->constrained("users")->onDelete('cascade');
+            $table->unique(['user_id','friend_id'],'uk1');
         });
     }
 

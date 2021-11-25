@@ -51,20 +51,30 @@ class User extends Authenticatable
         return $this->hasMany(Memory::class);
     }
 
-    /**
-     * return all friends of the current user
-     */
-    public function friendsConfirmed(){
-        return $this->belongsToMany(User::class, 'friends', 'user_id1', 'user_id2')
+    // friendship that this user started
+    protected function friendsOfThisUser()
+    {
+        //select * where user_id = me or friend_id = me
+
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
 		->withPivot('status')
 		->wherePivot('status', 'confirmed');
     }
 
-        /**
+    // friendship that this user was asked for
+	protected function thisUserFriendOf()
+	{
+		return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+		->withPivot('status')
+		->wherePivot('status', 'confirmed');
+	}
+
+    /**
      * return all friends of the current user
      */
     public function friendsPending(){
-        return $this->belongsToMany(User::class, 'friends', 'user_id1', 'user_id2')
+        //select * where friend_id is me
+        return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
 		->withPivot('status')
 		->wherePivot('status', 'pending');
     }

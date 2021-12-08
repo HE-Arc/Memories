@@ -48,6 +48,7 @@ class MemoryController extends Controller
             'publishing' => 'required'
         ]);
 
+
         $userid = $request->user()->id;
 
 
@@ -59,7 +60,7 @@ class MemoryController extends Controller
         $memory->location = new Point($request->latlng[0],$request->latlng[1],4326);
         $memory->save();
 
-        return inertia('Memory/Show',compact('memory'))
+        return inertia('Memories/Show',compact('memory'))
                         ->with('success','Memory created successfully');
 
     }
@@ -67,12 +68,13 @@ class MemoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Memory  $memory
+     * @param  \App\Models\Memory  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Memory $memory)
+    public function show($id)
     {
-
+        $memory = Memory::findOrFail($id);
+        return inertia('Memories/Show',compact('memory')) ;
     }
 
     /**

@@ -39,7 +39,7 @@
                   <div class="form-group col-12">
                     <label for="description">Description</label>
                     <vue-editor
-                      v-model="form.content"
+                      v-model="form.description"
                       :id="'description'"
                       :editorToolbar="customToolbar"
                     ></vue-editor>
@@ -98,7 +98,7 @@ export default {
       form: useForm({
         name: null,
         visited_date: null,
-        content: null,
+        description: null,
         publishing: "private",
         latlng: null,
       }),

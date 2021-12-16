@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\MemoryController;
+use App\Http\Controllers\MemoryPictureController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,6 +35,11 @@ Route::resource(
 Route::resource(
     '/friends',
     FriendsController::class
+)->middleware(['auth', 'verified']);
+
+Route::resource(
+    '/memorypictures',
+    MemoryPictureController::class
 )->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';

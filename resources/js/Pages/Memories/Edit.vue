@@ -5,11 +5,9 @@
     <template #header>
       <h2 class="h4 font-weight-bold">Show a new Memory</h2>
     </template>
-
-    <Link :href="route('memories.index')" class="btn btn-info"><i class="fa fa-home"></i></Link>
-    <Link :href="route('memories.edit', memory.id)" class="btn btn-success"><i class="fa fa-pencil-square-o"></i></Link>
-    <Link :href="route('memorypictures.edit', memory.id)" class="btn btn-info"><i class="fa fa-image"></i></Link>
+    <Link :href="route('memories.show', memory.id)" class="btn btn-info"><i class="fa fa-reply"></i></Link>
     <button @click="destroy(memory.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+    <br>
     <h3>{{memory.name}}</h3>
     <p>{{memory.date}}</p>
     <div v-html="memory.description" />
@@ -21,6 +19,7 @@
 <script>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
+
 export default {
   components: {
     BreezeAuthenticatedLayout,

@@ -17,7 +17,7 @@ export default {
     components: {
         BreezeInputError,
     },
-    props: ['modelValue', 'inputId', 'labelText', 'formError', 'inputType'],
+    props: ['modelValue', 'inputId', 'labelText', 'formError', 'inputType',],
     emits: ['update:modelValue'],
 }
 </script>

@@ -6,9 +6,7 @@
       <h2 class="h4 font-weight-bold">Add a new Memory</h2>
     </template>
 
-    <Link :href="route('memories.index')" class="btn btn-primary mb-2"
-      >Back</Link
-    >
+    <Link :href="route('memories.index')" class="btn btn-primary mb-2">Back</Link>
 
     <form @submit.prevent="form.post(route('memories.store'))">
       <div class="form-group row">
@@ -101,6 +99,7 @@ export default {
         description: null,
         publishing: "private",
         latlng: null,
+        pictures: [],
       }),
       customToolbar: [
         [{ font: [] }],

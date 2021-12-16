@@ -83,9 +83,10 @@ class MemoryController extends Controller
      * @param  \App\Models\Memory  $memory
      * @return \Illuminate\Http\Response
      */
-    public function edit(Memory $memory)
+    public function edit($id)
     {
-        //
+        $memory = Memory::findOrFail($id);
+        return inertia('Memories/Edit',compact('memory')) ;
     }
 
     /**

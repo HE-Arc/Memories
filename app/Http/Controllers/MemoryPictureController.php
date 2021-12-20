@@ -14,9 +14,10 @@ class MemoryPictureController extends Controller
 
     public function index()
     {
-        $url =Storage::url('1/5/particle.png');
-
-        dd($url);
+        $memoryPicture = new MemoryPicture();
+        $memoryPicture->memory_id = 5;
+        $memoryPicture->picture_name = "particle.png";
+        dd($memoryPicture->getUrlPicture());
     }
     /**
      * Store a newly created resource in storage.
@@ -67,6 +68,26 @@ class MemoryPictureController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\MemoryPicture  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $memoryPicture = MemoryPicture::find($id);
+        $userid = auth()->id();
+        $src = "public/" . $userid .'/'. $memoryPicture->memory_id . '/' . $memoryPicture->picture_name;
+        Storage::delete($src);
+        $memoryPicture->delete();
+
+        return response()->json([
+            'success' => true,
+        ], 200);
+
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Memory  $memory
@@ -75,10 +96,11 @@ class MemoryPictureController extends Controller
     public function edit($id)
     {
         $memory = Memory::findOrFail($id);
-        $images = $memory->pictures;
+        $img = $memory->pictures;
         $userid = auth()->id();
-        $path = "public/" . $userid .'/'. $memory->id . '/';
+        $src = "public/" . $userid .'/'. $memory->id . '/';
+        $src = Storage::url($src);
 
-        return inertia('Memories/Pictures',compact('memory','images','path')) ;
+        return inertia('Memories/Pictures',compact('memory','img','src')) ;
     }
 }

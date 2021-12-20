@@ -32,6 +32,8 @@ Route::resource(
     MemoryController::class
 )->middleware(['auth', 'verified']);
 
+Route::get('friends/search', [FriendsController::class, 'search'])->middleware(['auth', 'verified']);
+
 Route::resource(
     '/friends',
     FriendsController::class

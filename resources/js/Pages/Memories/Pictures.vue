@@ -9,7 +9,14 @@
     <br>
     <h3>{{memory.name}}</h3>
     <p>{{memory.date}}</p>
-    <ImagesUploader :id="memory.id"/>
+    <ImagesUploader @updateData="updatePictures" :id="memory.id"/>
+
+    <div class="flex flex-wrap mt-8">
+        <img v-for="(image, key) in this.images"
+             :key="key"
+             :src="this.path + image.picture_name"
+             class="w-48 h-46 object-cover mr-4 mb-4 shadow rounded">
+      </div>
   </breeze-authenticated-layout>
 </template>
 
@@ -25,8 +32,19 @@ export default {
     Link,
     ImagesUploader
   },
-  props: ['memory'],
+  props: ['memory',],
+   data() {
+    return {
+      path: "",
+      images: null
+    }
+  },
   methods:{
+        updatePictures(data) {
+        this.path = data.path;
+        this.images = data.images;
+        console.log(data);
+    }
 
   }
 };

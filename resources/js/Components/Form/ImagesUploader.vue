@@ -10,11 +10,12 @@
       <br>
    <a class="btn btn-success" v-on:click="submitFiles()">Submit</a>
 </div>
-<div v-if="upload_state === 'UPLOAD_SUCCES'">
-  A
+
+<div class="alert alert-success" role="alert" v-if="upload_state === 'UPLOAD_SUCCES'">
+   File upload with success !
 </div>
-<div v-else-if="upload_state === 'UPLOAD_FAIL'">
-  B
+<div class="alert alert-danger" role="alert" v-else-if="upload_state === 'UPLOAD_FAIL'">
+   Error while importing files...
 </div>
 </template>
 
@@ -31,6 +32,7 @@ export default {
   methods: {
     reset()
     {
+        this.$parent.path = "salut";
         this.$refs.files.value=null;
         this.files = [];
         this.upload_state = "";
@@ -59,12 +61,14 @@ export default {
           })
           .then(
             function (data) {
-                upload_state = "UPLOAD_SUCCES";
+               this.upload_state = "UPLOAD_SUCCES";
+               this.$emit('updateData', data.data)
+
             }.bind(this)
           )
           .catch(function (data) {
-                upload_state = "UPLOAD_FAIL";
-          });
+               this.upload_state = "UPLOAD_FAIL";
+          }.bind(this));
 
       }
     },

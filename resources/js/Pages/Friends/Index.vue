@@ -21,7 +21,11 @@
                     :inputId="'name'"
                     :labelText="'name'"
                     :formError="form.errors.title"
-                  />
+                  />                  <ul class="list-group" v-if="results.length > 0 && form.name">
+                    <li class="list-group-item list-group-item-action" v-for="result in results.slice(0,10)" :key="result.id">
+                        <div @click="addValueToInput(result.title)" v-text="result.title"></div>
+                    </li>
+                  </ul>
                 </div>
 
                 <breeze-validation-errors class="mt-3" />
@@ -98,15 +102,30 @@ export default {
     return {
       form: useForm({
         name: null
-      })
+      }),
+      results: []
     };
   },
+  watch: {
+  'form.name': function (newVal, oldVal){
+        this.searchMembers();
+     },
+
+},
   methods: {
       destroy(id) {
           Inertia.delete(route('friends.destroy', id));
       },
       update(id) {
           Inertia.put(route('friends.update', id));
+      },
+      searchMembers() {
+        axios.get('friends/search', { params: { name: this.form.name } })
+        .then(response => this.results = response.data)
+        .catch(error => {});
+      },
+      addValueToInput(username) {
+        this.form.name = username;
       },
   }
 }

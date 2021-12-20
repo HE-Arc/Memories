@@ -25,4 +25,11 @@ class Memory extends Model
     public function user() {
         $this->belongsTo(User::class);
     }
+
+    /**
+     * return all memories pictures of the current memory
+     */
+    public function pictures(){
+        return $this->hasMany(MemoryPicture::class);
+    }
 }

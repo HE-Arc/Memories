@@ -6,6 +6,7 @@ use App\Enums\Status;
 use App\Models\Friends;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Searchable\Search;
 
 class FriendsController extends Controller
 {
@@ -116,5 +117,18 @@ class FriendsController extends Controller
                         ->with('success','Friends deleted successfully');
     }
 
+    /**
+     * Get all user contains name
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        $results = (new Search())
+            ->registerModel(User::class, ['name'])
+            ->search($request->input('name'));
 
+        return response()->json($results);
+    }
 }

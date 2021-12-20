@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class MemoryPictureController extends Controller
 {
+
+    public function index()
+    {
+        $url =Storage::url('1/5/particle.png');
+
+        dd($url);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -25,26 +32,38 @@ class MemoryPictureController extends Controller
 
         $userid = $request->user()->id;
         $idMemory = $request->input('id');
+        $memory = Memory::findOrFail($idMemory);
 
         $file = $request->file('file');
         $filename = $file->getClientOriginalName();
-        $path = $userid .'/'. $idMemory .'/'. $filename;
+        $path = "public/" . $userid .'/'. $idMemory;
 
-        if(Storage::disk('uploads')->put($path, $file)) {
-          /*  $id = $request->input('id');
-            $memory = Memory::find($id);
-            $journey->video_path = $path;
-            $journey->save();*/
+        $request->file('file')->storeAs($path, $filename);
 
-            return response()->json([
-                'success' => true
-            ], 200);
-        }
+        $memoryPicture = new MemoryPicture();
+        $memoryPicture->memory_id = $idMemory;
+        $memoryPicture->picture_name = $filename;
+        $memoryPicture->save();
+
         return response()->json([
-            'success' => false
-        ], 500);
+            'success' => true,
+            'path' => Storage::url($path).'/',
+            'images' => $memory->pictures
+        ], 200);
 
 
+    }
+
+    /**
+     * Display list of pictures for a memory
+     *
+     * @param  \App\Models\Memory  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $memory = Memory::findOrFail($id);
+        return inertia('Memories/Show',compact('memory')) ;
     }
 
     /**
@@ -56,6 +75,10 @@ class MemoryPictureController extends Controller
     public function edit($id)
     {
         $memory = Memory::findOrFail($id);
-        return inertia('Memories/Pictures',compact('memory')) ;
+        $images = $memory->pictures;
+        $userid = auth()->id();
+        $path = "public/" . $userid .'/'. $memory->id . '/';
+
+        return inertia('Memories/Pictures',compact('memory','images','path')) ;
     }
 }

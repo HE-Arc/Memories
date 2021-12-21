@@ -53,6 +53,17 @@ class User extends Authenticatable implements Searchable
         return $this->hasMany(Memory::class);
     }
 
+    public function memoriesPictures()
+    {
+        return $this->hasManyThrough(MemoryPicture::class, Memory::class);
+    }
+
+
+    public function memoriesAndPictures()
+    {
+        return Memory::with('pictures')->where('user_id',$this->id)->get();
+    }
+
     // friendship that this user started
     protected function friendsOfThisUser()
     {

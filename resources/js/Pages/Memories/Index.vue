@@ -12,7 +12,7 @@
             <h2>Mes Memories</h2>
             <Link :href="route('memories.create')" class="btn btn-outline-success mb-2">create a new memory</Link>
             <div class="row">
-                <Card v-for="memory in memories" :key="memory.id" :name="memory.name" :id="memory.id"/>
+                <Card v-for="memory in memories" :key="memory.id" :name="memory.name" :id="memory.id" :picture="'/storage/' + id + '/' + memory.id + '/' + memory.pictures[0].picture_name"/>
             </div>
         </div>
 
@@ -40,7 +40,7 @@ export default {
     Card
   },
     props: [
-      "memories"
+      "memories","id"
   ],
   methods: {
       parseDate: function (date) {

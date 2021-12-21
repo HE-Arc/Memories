@@ -30,6 +30,7 @@ class Memory extends Model
      * return all memories pictures of the current memory
      */
     public function pictures(){
-        return $this->hasMany(MemoryPicture::class);
+        return $this->hasMany(MemoryPicture::class)->orderBy('order');
     }
+
 }

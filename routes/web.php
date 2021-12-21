@@ -32,12 +32,18 @@ Route::resource(
     MemoryController::class
 )->middleware(['auth', 'verified']);
 
-Route::get('friends/search', [FriendsController::class, 'search'])->middleware(['auth', 'verified']);
+Route::get('friends/search', [FriendsController::class, 'search'])
+    ->middleware(['auth', 'verified'])
+    ->name('friends.search');
 
 Route::resource(
     '/friends',
     FriendsController::class
 )->middleware(['auth', 'verified']);
+
+Route::post('memorypictures/order', [MemoryPictureController::class, 'order'])
+    ->middleware(['auth', 'verified'])
+    ->name('memorypictures.order');
 
 Route::resource(
     '/memorypictures',

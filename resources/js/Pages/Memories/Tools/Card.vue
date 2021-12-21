@@ -2,6 +2,7 @@
     <div class="col-md-4">
         <Link :href="route('memories.show',id)" class="card">
             <div class="card-body">
+                <img class="myImg  img-responsive" :src="picture" :alt="picture" >
                 <h5 class="card-title">{{ name }}</h5>
             </div>
         </Link>
@@ -13,7 +14,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3'
 
 
 export default {
-    props: ['name','id'],
+    props: ['name','id','picture'],
     components: {
         Head,
         Link,
@@ -26,6 +27,13 @@ export default {
     margin-top: 1rem;
     text-decoration: none;
     color: black;
+    text-align: center;
+}
+.myImg
+{
+    height: 10em;
+    width: 100%;
+    object-fit: cover;
 }
 
 </style>

@@ -17,6 +17,7 @@ class CreateMemoryPicturesTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('picture_name')->unique();
+            $table->integer('order', false, true);
             $table->foreignId('memory_id')->constrained()->onDelete('cascade');
         });
     }

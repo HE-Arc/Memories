@@ -7,18 +7,10 @@ use App\Models\Memory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-
-
 class MemoryPictureController extends Controller
 {
 
-    public function index()
-    {
-        $memoryPicture = new MemoryPicture();
-        $memoryPicture->memory_id = 5;
-        $memoryPicture->picture_name = "particle.png";
-        dd($memoryPicture->getUrlPicture());
-    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -44,6 +36,7 @@ class MemoryPictureController extends Controller
         $memoryPicture = new MemoryPicture();
         $memoryPicture->memory_id = $idMemory;
         $memoryPicture->picture_name = $filename;
+        $memoryPicture->order = $memory->pictures->count()+1;
         $memoryPicture->save();
 
         return response()->json([
@@ -53,18 +46,6 @@ class MemoryPictureController extends Controller
         ], 200);
 
 
-    }
-
-    /**
-     * Display list of pictures for a memory
-     *
-     * @param  \App\Models\Memory  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $memory = Memory::findOrFail($id);
-        return inertia('Memories/Show',compact('memory')) ;
     }
 
     /**
@@ -102,5 +83,34 @@ class MemoryPictureController extends Controller
         $src = Storage::url($src);
 
         return inertia('Memories/Pictures',compact('memory','img','src')) ;
+    }
+
+      /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function order(Request $request)
+    {
+        $request->validate([
+            'id1' => 'required|integer|min:1',
+            'id2' => 'required|integer|min:1',
+        ]);
+
+        $memoryPicture1 = MemoryPicture::findOrFail($request->id1);
+        $memoryPicture2 = MemoryPicture::findOrFail($request->id2);
+
+        $tmp = $memoryPicture1->order;
+        $memoryPicture1->order = $memoryPicture2->order;
+        $memoryPicture2->order = $tmp;
+        $memoryPicture1->save();
+        $memoryPicture2->save();
+
+
+        return response()->json([
+            'success' => true,
+        ], 200);
+
     }
 }

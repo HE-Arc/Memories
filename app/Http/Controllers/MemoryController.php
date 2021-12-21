@@ -19,8 +19,8 @@ class MemoryController extends Controller
     {
         $id = auth()->id();
         $user = User::find($id);
-        $memories = $user->memories;
-        return inertia('Memories/Index',compact('memories'));
+        $memories = $user->memoriesAndPictures();
+        return inertia('Memories/Index',compact('id','memories'));
     }
 
     /**

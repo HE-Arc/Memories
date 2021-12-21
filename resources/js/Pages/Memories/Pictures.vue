@@ -8,23 +8,27 @@
     <Link :href="route('memories.show', memory.id)" class="btn btn-info"
       ><i class="fa fa-reply"></i
     ></Link>
-    <br />
+    <br><br>
     <h3>{{ memory.name }}</h3>
     <p>{{ memory.date }}</p>
     <ImagesUploader @updateData="updatePictures" :id="memory.id" />
 
-    <div class="row">
+    <div class="row form-group">
       <div class="col-md-3" v-for="(image, key) in this.images" :key="key">
-        <div class="thumbnail">
+        <div class="img-thumbnail">
           <img
-            class="myImg img-thumbnail img-responsive"
+            class="myImg img-responsive"
             :src="this.path + image.picture_name"
             :alt="image.picture_name"
-          />
-            <button @click="destroy(image.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-            <button @click="shiftLeft(image.id)" class="btn btn-info"><i class="fa fa-arrow-left"></i></button>
-            <button @click="shiftRight(image.id)" class="btn btn-info"><i class="fa fa-arrow-right"></i></button>
-
+          /><br><br>
+          <div class="row form-group">
+            <span class="col-md-1"></span>
+            <button @click="destroy(image.id)" class="btn btn-danger col-md-2"><i class="fa fa-trash"></i></button>&nbsp;
+            <span class="col-md-4"></span>
+            <button @click="shiftLeft(image.id)" class="btn btn-info col-md-2"><i class="fa fa-arrow-left"></i></button>&nbsp;
+            <button @click="shiftRight(image.id)" class="btn btn-info col-md-2"><i class="fa fa-arrow-right"></i></button>
+            <span class="col-md-1"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -87,6 +91,10 @@ export default {
     },
     swap(idx1,idx2)
     {
+
+        axios.post(route('memorypictures.order'),
+                        { id1: this.images[idx1].id, id2: this.images[idx2].id});
+
         var tmp = this.images[idx1];
         this.images[idx1] = this.images[idx2];
         this.images[idx2] = tmp;

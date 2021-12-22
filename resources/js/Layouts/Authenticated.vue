@@ -69,6 +69,7 @@ import BreezeDropdownLink from '@/Components/DropdownLink.vue'
 import BreezeNavLink from '@/Components/NavLink.vue'
 import { Link } from '@inertiajs/inertia-vue3'
 import FlashMessages from '@/Components/Tools/FlashMessages.vue'
+import { Inertia } from '@inertiajs/inertia'
 
 export default {
   components: {

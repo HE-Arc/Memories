@@ -60,9 +60,9 @@ class MemoryController extends Controller
         $memory->location = new Point($request->latlng[0],$request->latlng[1],4326);
         $memory->save();
 
+
         return inertia('Memories/Show',compact('memory'))
                         ->with('success','Memory created successfully');
-
     }
 
     /**
@@ -73,7 +73,8 @@ class MemoryController extends Controller
      */
     public function show($id)
     {
-        $memory = Memory::findOrFail($id);
+        $memory = Memory::with('user')->with('pictures')->findOrFail($id);
+
         return inertia('Memories/Show',compact('memory')) ;
     }
 

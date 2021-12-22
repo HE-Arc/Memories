@@ -23,7 +23,7 @@ class Memory extends Model
      *get memory's user
     */
     public function user() {
-        $this->belongsTo(User::class);
+       return $this->belongsTo(User::class);
     }
 
     /**

@@ -61,7 +61,7 @@ class User extends Authenticatable implements Searchable
 
     public function memoriesAndPictures()
     {
-        return Memory::with('pictures')->where('user_id',$this->id)->get();
+        return Memory::with('pictures')->where('user_id',$this->id)->latest()->paginate(6);
     }
 
     // friendship that this user started

@@ -6,32 +6,39 @@
       <h2 class="h4 font-weight-bold">Show a new Memory</h2>
     </template>
 
-    <Link :href="route('memories.index')" class="btn btn-info"><i class="fa fa-home"></i></Link>
-    <Link :href="route('memories.edit', memory.id)" class="btn btn-success"><i class="fa fa-pencil-square-o"></i></Link>
-    <Link :href="route('memorypictures.edit', memory.id)" class="btn btn-info"><i class="fa fa-image"></i></Link>
-    <button @click="destroy(memory.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-    <h3>{{memory.name}}</h3>
-    <p>{{memory.date}}</p>
+    <Link :href="route('memories.index')" class="btn btn-info"><i class="fa fa-home"></i></Link>&nbsp;
+    <Link :href="route('memories.edit', memory.id)" class="btn btn-success"><i class="fa fa-pencil-square-o"></i></Link>&nbsp;
+    <Link :href="route('memorypictures.edit', memory.id)" class="btn btn-success"><i class="fa fa-image"></i></Link>&nbsp;
+    <button @click="destroy(memory.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button><br><br>
+    <h1>{{memory.name}}</h1>
+    <p>Author : {{auth.user.name}}</p>
+    <p>Visited : {{this.parseDate(memory.visited_date)}}</p>
+    <SlideShow v-if="memory.pictures" :pictures="this.memory.pictures" :user_id="this.auth.user.id" /><br>
     <div v-html="memory.description" />
-
-
   </breeze-authenticated-layout>
 </template>
 
 <script>
 import BreezeAuthenticatedLayout from "@/Layouts/Authenticated.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
+import SlideShow from "@/Components/Form/SlideShow.vue";
+
+
 export default {
   components: {
     BreezeAuthenticatedLayout,
     Head,
     Link,
+    SlideShow
   },
-  props: ['memory'],
+  props: ['memory','auth'],
   methods:{
        destroy(id) {
           Inertia.delete(route('memories.destroy', id));
-      }
+      },
+       parseDate: function (date) {
+        return moment(date).format('YYYY-MM-DD');
+        },
   }
 };
 </script>

@@ -1,16 +1,20 @@
 <template>
     <div class="col-md-4">
-        <div class="container d-flex justify-content-center align-items-center">
+        <div class="container justify-content-center align-items-center">
             <div class="friends-card">
-            <div class="upper"> <img src="https://i.imgur.com/Qtrsrk5.jpg" class="img-fluid"> </div>
-            <div class="user text-center">
-                <div class="profile"> <img src="https://i.imgur.com/JgYD2nQ.jpg" class="rounded-circle" width="80"> </div>
-            </div>
-            <div class="mt-5 text-center">
-                <h4 class="mb-0">{{name}}</h4>
-                <button v-if="pending == true" @click="update(id)" class="btn btn-success btn-sm btn-custom">Add</button>
-                <button @click="destroy(id)" class="btn btn-danger btn-sm btn-custom">Remove</button>
-            </div>
+                <div class="upper">
+                    <img src="https://i.imgur.com/Qtrsrk5.jpg" class="img-fluid">
+                </div>
+                <div class="user text-center">
+                    <div class="profile">
+                        <img src="https://i.imgur.com/JgYD2nQ.jpg" class="rounded-circle" width="80">
+                    </div>
+                </div>
+                <div class="mt-5 text-center">
+                    <h4 class="mb-0">{{name}}</h4>
+                    <button v-if="pending == true" @click="update(id)" class="btn btn-success btn-sm btn-custom">Add</button>
+                    <button @click="destroy(id)" class="btn btn-danger btn-sm btn-custom">Remove</button>
+                </div>
             </div>
         </div>
     </div>
@@ -19,7 +23,6 @@
 <script>
 import { Head, Link } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
-
 
 export default {
     props: ['name','id','pending'],
@@ -84,7 +87,8 @@ export default {
     border-radius: 15px;
     padding-left: 20px;
     padding-right: 20px;
-    height: 35px
+    height: 35px;
+    margin: 5px;
 }
 
 </style>

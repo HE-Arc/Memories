@@ -1,5 +1,5 @@
 <template>
-  <div v-if="this.pictures.length" >
+  <div class="test" v-if="this.pictures.length" >
     <agile autoplay autoplaySpeed="5000" :initial-slide="0">
       <img  v-for="picture in this.pictures" :key="picture.id"
         class="slide"
@@ -83,7 +83,7 @@ export default {
 // Slides styles
 .slide {
   display: block;
-  height: 40vh;
+  height: 60vh;
   object-fit: cover;
   width: 100%;
   border-color: black;

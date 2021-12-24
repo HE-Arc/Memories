@@ -99,7 +99,6 @@ export default {
         description: null,
         publishing: "private",
         latlng: null,
-        pictures: [],
       }),
       customToolbar: [
         [{ font: [] }],

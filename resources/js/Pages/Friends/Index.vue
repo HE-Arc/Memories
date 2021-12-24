@@ -37,12 +37,12 @@
             </div>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-4 row">
             <h2>Mes Amis</h2>
             <CardFriends v-for="friendConfirmed in friendsConfirmed" :key="friendConfirmed.id" :name="friendConfirmed.name" :id="friendConfirmed.id"/>
         </div>
 
-        <div class="mb-4">
+        <div class="mb-4 row">
           <h2>Demande en attente</h2>
           <CardFriends v-for="friendPending in friendsPending" :key="friendPending.id" :name="friendPending.name" :id="friendPending.id" :pending="true"/>
         </div>

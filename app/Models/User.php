@@ -58,14 +58,13 @@ class User extends Authenticatable implements Searchable
         return $this->hasManyThrough(MemoryPicture::class, Memory::class);
     }
 
-
     public function memoriesAndPictures()
     {
         return Memory::with('pictures')->where('user_id',$this->id)->latest()->paginate(6);
     }
 
     // friendship that this user started
-    protected function friendsOfThisUser()
+    public function friendsOfThisUser()
     {
         //select * where user_id = me or friend_id = me
 
@@ -75,7 +74,7 @@ class User extends Authenticatable implements Searchable
     }
 
     // friendship that this user was asked for
-	protected function thisUserFriendOf()
+	public function thisUserFriendOf()
 	{
 		return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
 		->withPivot('status')

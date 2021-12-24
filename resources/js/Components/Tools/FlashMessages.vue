@@ -1,19 +1,35 @@
 <template>
+<span v-if="this.hidden == false">
     <div v-if="$page.props.flash.success" class="alert alert-success">
-        <p>
-            {{$page.props.flash.success}}
-        </p>
+        {{$page.props.flash.success}}
+        <button @click="hideFlashMessage()" class="btn float-right align-middle"><i class="fa fa-close"></i></button>
     </div>
     <div v-if="$page.props.flash.danger" class="alert alert-danger">
-        <p>
-            {{$page.props.flash.danger}}
-        </p>
+        {{$page.props.flash.danger}}
+        <button @click="hideFlashMessage()" class="btn float-right align-middle"><i class="fa fa-close"></i></button>
     </div>
-    <div v-if="$page.props.flash.warning" class="alert alert-success" role="alert">
-        <strong>Alert!</strong>  {{$page.props.flash.warning}}
-        <button class="btn float-right align-middle"><i class="fa fa-close"></i></button>
+    <div v-if="$page.props.flash.warning" class="alert alert-warning">
+        {{$page.props.flash.warning}}
+        <button @click="hideFlashMessage()" class="btn float-right align-middle"><i class="fa fa-close"></i></button>
     </div>
+</span>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            hidden: false
+        };
+    },
+    methods: {
+        hideFlashMessage() {
+            console.log(flash.warning);
+            //flash.warning = "";
+        }
+    },
+}
+</script>
 
 <style>
 div.alert button.btn {

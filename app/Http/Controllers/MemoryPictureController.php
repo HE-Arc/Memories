@@ -6,6 +6,8 @@ use App\Models\MemoryPicture;
 use App\Models\Memory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
+
 
 class MemoryPictureController extends Controller
 {
@@ -26,6 +28,10 @@ class MemoryPictureController extends Controller
         $userid = $request->user()->id;
         $idMemory = $request->input('id');
         $memory = Memory::findOrFail($idMemory);
+
+        if (!Gate::allows('memory-owner', $memory)) {
+            abort(403);
+        }
 
         $file = $request->file('file');
         $filename = $file->getClientOriginalName();
@@ -57,6 +63,11 @@ class MemoryPictureController extends Controller
     public function destroy($id)
     {
         $memoryPicture = MemoryPicture::find($id);
+
+        if (!Gate::allows('memory-owner', $memoryPicture->memory)) {
+            abort(403);
+        }
+
         $userid = auth()->id();
         $src = "public/" . $userid .'/'. $memoryPicture->memory_id . '/' . $memoryPicture->picture_name;
         Storage::delete($src);
@@ -77,6 +88,11 @@ class MemoryPictureController extends Controller
     public function edit($id)
     {
         $memory = Memory::findOrFail($id);
+
+        if (!Gate::allows('memory-owner', $memory)) {
+            abort(403);
+        }
+
         $img = $memory->pictures;
         $userid = auth()->id();
         $src = "public/" . $userid .'/'. $memory->id . '/';
@@ -101,12 +117,16 @@ class MemoryPictureController extends Controller
         $memoryPicture1 = MemoryPicture::findOrFail($request->id1);
         $memoryPicture2 = MemoryPicture::findOrFail($request->id2);
 
+        if (!Gate::allows('memory-owner', $memoryPicture1->memory)) {
+            abort(403);
+        }
+
+
         $tmp = $memoryPicture1->order;
         $memoryPicture1->order = $memoryPicture2->order;
         $memoryPicture2->order = $tmp;
         $memoryPicture1->save();
         $memoryPicture2->save();
-
 
         return response()->json([
             'success' => true,

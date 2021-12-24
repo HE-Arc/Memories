@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Memory;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Http\Request;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
@@ -45,12 +46,11 @@ class MemoryController extends Controller
             'name' => 'required|min:5|max:30',
             'visited_date' => 'required|date|before_or_equal:today',
             'latlng' => 'required',
-            'publishing' => 'required'
+            'publishing' => 'required|in:private,public,friends-only'
         ]);
 
 
         $userid = $request->user()->id;
-
 
         $memory = new Memory();
         $memory->name = $request->name;
@@ -58,11 +58,11 @@ class MemoryController extends Controller
         $memory->description = $request->description;
         $memory->visited_date = $request->visited_date;
         $memory->location = new Point($request->latlng[0],$request->latlng[1],4326);
+        $memory->publishing = $request->publishing;
         $memory->save();
 
-
         return inertia('Memories/Show',compact('memory'))
-                        ->with('success','Memory created successfully');
+                    ->with(['flash.success' => "Memory created successfully"]);
     }
 
     /**
@@ -74,6 +74,10 @@ class MemoryController extends Controller
     public function show($id)
     {
         $memory = Memory::with('user')->with('pictures')->findOrFail($id);
+
+        if (!Gate::allows('show-memory', $memory)) {
+            abort(403);
+        }
 
         return inertia('Memories/Show',compact('memory')) ;
     }
@@ -87,6 +91,11 @@ class MemoryController extends Controller
     public function edit($id)
     {
         $memory = Memory::findOrFail($id);
+
+        if (!Gate::allows('memory-owner', $memory)) {
+            abort(403);
+        }
+
         return inertia('Memories/Edit',compact('memory')) ;
     }
 
@@ -94,13 +103,34 @@ class MemoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Memory  $memory
+     * @param  \App\Models\Memory  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Memory $memory)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|min:5|max:30',
+            'visited_date' => 'required|date|before_or_equal:today',
+            'latlng' => 'required',
+            'publishing' => 'required|in:private,public,friends-only'
+        ]);
+
+        $memoryOld = Memory::findOrFail($memory->id);
+
+        if (!Gate::allows('memory-owner', $memoryOld)) {
+            abort(403);
+        }
+
+        $memoryOld->name = $request->name;
+        $memoryOld->description = $request->description;
+        $memoryOld->visited_date = $request->visited_date;
+        $memoryOld->location = new Point($request->latlng[0],$request->latlng[1],4326);
+        $memoryOld->publishing = $request->publishing;
+        $memoryOld->save();
+
+        return redirect()->route('memories.show',['memory' => $memoryOld])
+                    ->with('success','Memory deleted successfully');
+                }
 
     /**
      * Remove the specified resource from storage.
@@ -110,11 +140,18 @@ class MemoryController extends Controller
      */
     public function destroy($id)
     {
-        $memory = Memory::find($id);
+        $memory = Memory::findOrFail($id);
+
+        if (!Gate::allows('memory-owner', $memory)) {
+            abort(403);
+        }
+
         $memory->delete();
 
         return redirect()->route('memories.index')
                         ->with('success','Memory deleted successfully');
 
     }
+
+
 }

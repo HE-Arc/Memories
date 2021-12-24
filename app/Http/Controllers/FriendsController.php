@@ -44,23 +44,40 @@ class FriendsController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'name' => 'required',
         ]);
 
-        //TODO if already friendship
-        $userFriend = User::where('name',$request->name)->firstOrFail();
+        $userFriend = User::where('name',$request->name)->first();
+        $id = auth()->id();
+        $user = User::find($id);
 
+        if($user == $userFriend)
+        {
+            return redirect()->route('friends.index')
+                ->with('danger',"You can't to add yourself");
+        }
+        elseif(is_null($userFriend))
+        {
+            return redirect()->route('friends.index')->with('danger',"User doesn't exist");
+        }
+        else
+        {
+            $friendsShip = Friends::isFriend($userFriend->id,$user->id);
+            if(empty($friendsShip))
+            {
+                $friend = new Friends();
+                $friend->friend_id = $userFriend->id;
+                $friend->user_id = auth()->id();
+                $friend->status = Status::PENDING;
+                $friend->save();
 
-        //TODO check friend exist
-         $friend = new Friends();
-         $friend->friend_id = $userFriend->id;
-         $friend->user_id = auth()->id();
-         $friend->status = Status::PENDING;
-         $friend->save();
+                return redirect()->route('friends.index')->with('success','Request friendship successfully');
+            }
 
-         return redirect()->route('friends.index')
-                        ->with('success','Request friendship successfully');
+            return redirect()->route('friends.index')->with('warning',"Request friendship has been already send");
+        }
     }
 
     /**

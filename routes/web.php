@@ -27,27 +27,21 @@ Route::get('/', function () {
     ]);
 });
 
-Route::resource(
-    '/memories',
-    MemoryController::class
-)->middleware(['auth', 'verified']);
+Route::resource('/memories',MemoryController::class)
+    ->middleware(['auth', 'verified']);
 
 Route::get('friends/search', [FriendsController::class, 'search'])
     ->middleware(['auth', 'verified'])
     ->name('friends.search');
 
-Route::resource(
-    '/friends',
-    FriendsController::class
-)->middleware(['auth', 'verified']);
+Route::resource('/friends',FriendsController::class)
+    ->middleware(['auth', 'verified']);
 
 Route::post('memorypictures/order', [MemoryPictureController::class, 'order'])
     ->middleware(['auth', 'verified'])
     ->name('memorypictures.order');
 
-Route::resource(
-    '/memorypictures',
-    MemoryPictureController::class
-)->middleware(['auth', 'verified']);
+Route::resource('/memorypictures',MemoryPictureController::class)
+    ->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';

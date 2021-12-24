@@ -1,12 +1,7 @@
 <template>
   <div class="row soft-padding margin-zero">
     <div class="container border-solid-black" id="mapContainer"></div>
-     <input
-        :value="latlng"
-        :type="inputType"
-        :id="inputId"
-        hidden
-    >
+    <input :value="latlng" :type="inputType" :id="inputId" hidden />
   </div>
 </template>
 
@@ -16,20 +11,17 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import LeafletSearch from "leaflet-search";
 
-
-
-
 export default {
   name: "LeafletMap",
   components: {},
-  props: ['modelValue'],
-  emits: ['update:modelValue'],
+  props: ["modelValue","init"],
+  emits: ["update:modelValue"],
   data() {
     return {
       map: null,
       marker: null,
       currentPosMarker: null,
-      latlng: null,
+      latlng: this.modelValue,
       //https://github.com/pointhi/leaflet-color-markers
       greenIcon: new L.Icon({
         iconUrl:
@@ -54,10 +46,9 @@ export default {
     };
   },
   mounted() {
-
     this.map = L.map("mapContainer");
 
-      this.map.addControl(
+    this.map.addControl(
       new L.Control.Search({
         url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
         jsonpParam: "json_callback",
@@ -66,55 +57,66 @@ export default {
         marker: L.circleMarker([0, 0], { radius: 30 }),
         autoCollapse: true,
         autoType: true,
-        minLength: 2
+        minLength: 2,
       })
     );
-
 
     L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
 
-    this.map.on('click', e => {
-        this.latlng  = [e.latlng.lat,e.latlng.lng];
-        this.$emit('update:modelValue',this.latlng);
+    this.map.on("click", (e) => {
+      this.latlng = [e.latlng.lat, e.latlng.lng];
+      this.$emit("update:modelValue", this.latlng);
 
-        if(this.marker == null)
-        {
-            this.marker = L.marker(this.latlng, {
-                icon: this.greenIcon,
-                }).addTo(this.map);
-        }
-        else
-        {
-            this.marker.setLatLng(this.latlng).update();
-        }
+      if (this.marker == null) {
+        this.marker = L.marker(this.latlng, {
+          icon: this.greenIcon,
+        }).addTo(this.map);
+      } else {
+        this.marker.setLatLng(this.latlng).update();
+      }
     });
 
-    this.map.locate({
-      setView: true,
-      maxZoom: 10,
-      enableHighAccuracy: true,
-    });
 
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.latlng = [position.coords.latitude,position.coords.longitude];
-        this.$emit('update:modelValue',this.latlng);
-        this.currentPosMarker = L.marker(this.latlng, {
-          icon: this.redIcon,
-        }).addTo(this.map);
-      });
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.latlng = [position.coords.latitude, position.coords.longitude];
+
+          if(this.init == null)
+          {
+                this.$emit("update:modelValue", this.latlng);
+          }
+          this.currentPosMarker = L.marker(this.latlng, {
+            icon: this.redIcon,
+          }).addTo(this.map);
+        });
+
+       this.map.setView(this.latlng,10); //centre la carte sur le point
+
     }
+    //cas update
+   if(this.init)
+   {
+       console.log("toto");
+       this.latlng = [this.init[0], this.init[1]];
+
+       //set focus ?
+        this.marker = L.marker(this.latlng, {
+          icon: this.greenIcon,
+        }).addTo(this.map);
+
+        this.map.setView(this.latlng,10); //centre la carte sur le point
+
+   }
   },
   onBeforeUnmount() {
     if (this.map) {
       this.map.remove();
     }
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
@@ -124,5 +126,4 @@ export default {
   height: 45vh;
 }
 @import "~leaflet-search/src/leaflet-search.css";
-
 </style>

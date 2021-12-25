@@ -46,6 +46,7 @@ export default {
     Head,
     Link,
     ImagesUploader,
+
   },
   props: ["memory", "img", "src"],
   data() {

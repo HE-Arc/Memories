@@ -99,7 +99,6 @@ export default {
     //cas update
    if(this.init)
    {
-       console.log("toto");
        this.latlng = [this.init[0], this.init[1]];
 
        //set focus ?

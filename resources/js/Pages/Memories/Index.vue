@@ -9,7 +9,7 @@
         </template>
 
         <div class="mb-4">
-            <h2>Mes Memories</h2>
+            <h2>My Memories</h2>
             <Link :href="route('memories.create')" class="btn btn-outline-success mb-2">create a new memory</Link>
             <div class="row">
                 <Card v-for="memory in memories.data" :key="memory.id" :user_id="auth.user.id" :memory="memory"/>
@@ -17,9 +17,11 @@
             <Pagination class="mt-6" :links="memories.links" />
         </div>
 
-
         <div class="mb-4">
-            <h2>Memories de mes amis</h2>
+            <MemoriesMap :myMemories="memories"
+                         :memoriesFriends="memoriesFriends"
+                         :publicMemories="publicMemories"
+                         :currentUser="auth.user"/>
         </div>
     </breeze-authenticated-layout>
 
@@ -31,6 +33,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
 import moment from 'moment'
 import Card from '@/Pages/Memories/Tools/Card.vue'
+import MemoriesMap from '@/Components/Form/MemoriesMap.vue'
 import Pagination from '@/Components/Pagination.vue'
 
 
@@ -41,10 +44,11 @@ export default {
     Head,
     Link,
     Card,
-    Pagination
+    Pagination,
+    MemoriesMap
   },
     props: [
-      "memories","id","auth"
+      "memories","id","auth","memoriesFriends","publicMemories"
   ],
   methods: {
       parseDate: function (date) {

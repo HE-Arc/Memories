@@ -10,10 +10,10 @@
     <span v-if="auth.user.id == memory.user_id">
         <Link :href="route('memories.edit', memory.id)" class="btn btn-success"><i class="fa fa-pencil-square-o"></i></Link>&nbsp;
         <Link :href="route('memorypictures.edit', memory.id)" class="btn btn-success"><i class="fa fa-image"></i></Link>&nbsp;
-        <button @click="destroy(memory.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button><br><br>
-    </span>
+        <button @click="destroy(memory.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+    </span><br><br>
     <h1>{{memory.name}}</h1>
-    <p>Author : {{auth.user.name}}</p>
+    <p>Author : {{memory.user.name}}</p>
     <p>Visited : {{this.parseDate(memory.visited_date)}}</p>
     <SlideShow v-if="memory.pictures" :pictures="this.memory.pictures" :user_id="this.auth.user.id" /><br>
     <div v-html="memory.description" />

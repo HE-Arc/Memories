@@ -18,10 +18,22 @@ class MemoryController extends Controller
      */
     public function index()
     {
+        //find current user
         $id = auth()->id();
         $user = User::find($id);
+
+        //my memories
         $memories = $user->memoriesAndPictures();
-        return inertia('Memories/Index',compact('id','memories'));
+
+        //friends'memories
+        $friendsMemoriesOfThisUser = $user->friendsMemoriesOfThisUser;
+        $memoriesOfthisUserFriendOf = $user->memoriesOfthisUserFriendOf;
+        $memoriesFriends = $friendsMemoriesOfThisUser->merge($memoriesOfthisUserFriendOf);
+
+        //public memories
+        $publicMemories = Memory::publicMemories();
+
+        return inertia('Memories/Index',compact('id','memories','memoriesFriends','publicMemories'));
     }
 
     /**
@@ -42,6 +54,7 @@ class MemoryController extends Controller
      */
     public function store(Request $request)
     {
+        //check if request is correct
        $request->validate([
             'name' => 'required|min:5|max:30',
             'visited_date' => 'required|date|before_or_equal:today',
@@ -49,9 +62,10 @@ class MemoryController extends Controller
             'publishing' => 'required|in:private,public,friends-only'
         ]);
 
-
+        //find current user
         $userid = $request->user()->id;
 
+        //build and store new memories from request data
         $memory = new Memory();
         $memory->name = $request->name;
         $memory->user_id = $userid;
@@ -73,8 +87,10 @@ class MemoryController extends Controller
      */
     public function show($id)
     {
+        //get memories with its pictures
         $memory = Memory::with('user')->with('pictures')->findOrFail($id);
 
+        //check if the user is authorized to access the memory
         if (!Gate::allows('show-memory', $memory)) {
             abort(403);
         }
@@ -90,8 +106,10 @@ class MemoryController extends Controller
      */
     public function edit($id)
     {
+        //find the memory to edit
         $memory = Memory::findOrFail($id);
 
+        //check if the user is authorized to access the memory
         if (!Gate::allows('memory-owner', $memory)) {
             abort(403);
         }
@@ -108,6 +126,7 @@ class MemoryController extends Controller
      */
     public function update(Request $request, Memory $memory)
     {
+        //check if the request is correct
         $request->validate([
             'name' => 'required|min:5|max:30',
             'visited_date' => 'required|date|before_or_equal:today',
@@ -115,12 +134,15 @@ class MemoryController extends Controller
             'publishing' => 'required|in:private,public,friends-only'
         ]);
 
+        //check if the memory exists in the database
         $memoryOld = Memory::findOrFail($memory->id);
 
+        //check if the user is authorized to access the memory
         if (!Gate::allows('memory-owner', $memoryOld)) {
             abort(403);
         }
 
+        //update the memory with the request data
         $memoryOld->name = $request->name;
         $memoryOld->description = $request->description;
         $memoryOld->visited_date = $request->visited_date;
@@ -140,12 +162,15 @@ class MemoryController extends Controller
      */
     public function destroy($id)
     {
+        //check if the memory exists in the database
         $memory = Memory::findOrFail($id);
 
+        //check if the user is authorized to access the memory
         if (!Gate::allows('memory-owner', $memory)) {
             abort(403);
         }
 
+        //delete the memory
         $memory->delete();
 
         return redirect()->route('memories.index')

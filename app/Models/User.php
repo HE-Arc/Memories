@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Publishing;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
@@ -66,8 +67,6 @@ class User extends Authenticatable implements Searchable
     // friendship that this user started
     public function friendsOfThisUser()
     {
-        //select * where user_id = me or friend_id = me
-
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
 		->withPivot('status')
 		->wherePivot('status', 'confirmed');
@@ -96,4 +95,29 @@ class User extends Authenticatable implements Searchable
         $url = route('friends.index', $this->id);
         return new SearchResult($this, $this->name, $url);
     }
+
+    public function memoriesAndPicturesProtected()
+    {
+        return $this->hasMany(Memory::class)->wherePublishing(Publishing::P_FRIENDS)->with('pictures');
+    }
+
+    public function friendsMemoriesOfThisUser()
+    {
+       return $this
+        ->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
+		->withPivot('status')
+		->wherePivot('status', 'confirmed')
+        ->with('memoriesAndPicturesProtected');
+
+
+    }
+
+    public function memoriesOfthisUserFriendOf()
+	{
+		return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
+		->withPivot('status')
+		->wherePivot('status', 'confirmed')
+        ->with('memoriesAndPicturesProtected');
+
+	}
 }

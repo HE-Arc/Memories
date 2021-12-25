@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Publishing;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
@@ -32,5 +33,18 @@ class Memory extends Model
     public function pictures(){
         return $this->hasMany(MemoryPicture::class)->orderBy('order');
     }
+
+   public static function publicMemories()
+   {
+        $userid = auth()->id();
+
+       return Memory::wherePublishing(Publishing::P_PUBLIC)
+       ->where('user_id', '!=', $userid)
+       ->with('user')
+       ->with('pictures')
+       ->get();
+   }
+
+
 
 }

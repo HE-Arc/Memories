@@ -16,7 +16,7 @@ class MemoryPicture extends Model
     */
     public function memory()
     {
-        $this->belongsTo(Memory::class);
+        return $this->belongsTo(Memory::class);
     }
 
     public function getUrlPicture()

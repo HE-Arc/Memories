@@ -70,10 +70,10 @@ export default {
     };
   },
   mounted() {
-    this.initMap();
-    this.addMemoriesFriends();
-    this.addPublicMemories();
-    this.addMyMemories();
+    this.initMap(); //prepare the map
+    this.addMemoriesFriends(); //add all friends memories in the map
+    this.addPublicMemories(); //add all public memories in the map
+    this.addMyMemories(); //add all user memories in the map
   },
   onBeforeUnmount() {
     if (this.map) {
@@ -84,6 +84,7 @@ export default {
     initMap() {
       this.map = L.map("mapContainer");
 
+        //add control to search a place on the map
       this.map.addControl(
         new L.Control.Search({
           url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
@@ -102,42 +103,55 @@ export default {
           '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(this.map);
 
+      //if the user have geolocation
       if (navigator.geolocation) {
+          //get the user curent position
         navigator.geolocation.getCurrentPosition((position) => {
           this.latlng = [position.coords.latitude, position.coords.longitude];
-          this.map.setView(this.latlng, 10); //centre la carte sur le point
+          this.map.setView(this.latlng, 10); //center the map on the current pos
+          //add a red marker to identify the current position on the map
           this.currentPosMarker = L.marker(this.latlng, {
             icon: this.redIcon,
           }).addTo(this.map);
         });
       }
     },
-    visit(id) {
-      Inertia.get(route("memories.show", id));
-    },
+    /*
+    *add all friends memories in the map
+    */
     addMemoriesFriends() {
       //foreach friends
       this.memoriesFriends.forEach((friend) => {
         //foreach memory's friend
         friend.memories_and_pictures_protected.forEach((memory) => {
+            //add a violet marker on the map
           this.drawMarker(memory, friend, this.violetIcon);
         });
       });
     },
+    /*
+    *add all public memories in the map
+    */
     addPublicMemories() {
       //foreach memories
       this.publicMemories.forEach((memory) => {
-        //add marker
+        //add green marker
         this.drawMarker(memory, memory.user, this.greenIcon);
       });
     },
+    /*
+    *add all user memories in the map
+    */
     addMyMemories() {
       //foreach memories
       this.myMemories.data.forEach((memory) => {
-        //add marker
+        //add black marker
         this.drawMarker(memory, this.currentUser, this.blackIcon);
       });
     },
+    /*
+    * draw a marker on the map
+    */
     drawMarker(memory, user, icon) {
       //find position in memory
       var pos = [
@@ -149,13 +163,20 @@ export default {
         icon: icon,
       });
 
+      //add image in picture if exist
       if (memory.pictures.length > 0) {
         this.imgPath = `<img class='miniImg' src='/storage/${user.id}/${memory.id}/${memory.pictures[0].picture_name}' alt='${memory.pictures[0].picture_name}'/><br><br>`;
-      } else {
+      }
+      //else default image
+      else {
         this.imgPath = this.imgDefault;
       }
 
       //add popup to marker
+        //memory name
+        //user name
+        //image
+        //link to show memory
       mark.bindPopup(
         `<h5>${memory.name}</h5>
                <i>Author : ${user.name}</i><br>

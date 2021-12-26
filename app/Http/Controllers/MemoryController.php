@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Http\Request;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Illuminate\Support\Facades\Storage;
+
 
 class MemoryController extends Controller
 {
@@ -74,6 +76,9 @@ class MemoryController extends Controller
         $memory->location = new Point($request->latlng[0],$request->latlng[1],4326);
         $memory->publishing = $request->publishing;
         $memory->save();
+
+        //send the memory with all information (user, picture) to the view
+        $memory = Memory::with('user')->with('pictures')->findOrFail($memory->id);
 
         return inertia('Memories/Show',compact('memory'))
                     ->with(['flash.success' => "Memory created successfully"]);
@@ -169,6 +174,10 @@ class MemoryController extends Controller
         if (!Gate::allows('memory-owner', $memory)) {
             abort(403);
         }
+
+        //delete potential images from the server
+        $src = "public/" . auth()->id() .'/'. $memory->id;
+        Storage::deleteDirectory($src);
 
         //delete the memory
         $memory->delete();

@@ -5,23 +5,21 @@
   </div>
 </template>
 
-
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import LeafletSearch from "leaflet-search";
-
 export default {
   name: "LeafletMap",
   components: {},
-  props: ["modelValue","init"],
+  props: ["modelValue", "init"],
   emits: ["update:modelValue"],
   data() {
     return {
       map: null,
       marker: null,
       currentPosMarker: null,
-      latlng: this.modelValue,
+      latlng: null,
       //https://github.com/pointhi/leaflet-color-markers
       greenIcon: new L.Icon({
         iconUrl:
@@ -46,76 +44,101 @@ export default {
     };
   },
   mounted() {
-    this.map = L.map("mapContainer");
-
-    this.map.addControl(
-      new L.Control.Search({
-        url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
-        jsonpParam: "json_callback",
-        propertyName: "display_name",
-        propertyLoc: ["lat", "lon"],
-        marker: L.circleMarker([0, 0], { radius: 30 }),
-        autoCollapse: true,
-        autoType: true,
-        minLength: 2,
-      })
-    );
-
-    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.map);
-
-    this.map.on("click", (e) => {
-      this.latlng = [e.latlng.lat, e.latlng.lng];
-      this.$emit("update:modelValue", this.latlng);
-
-      if (this.marker == null) {
-        this.marker = L.marker(this.latlng, {
-          icon: this.greenIcon,
-        }).addTo(this.map);
-      } else {
-        this.marker.setLatLng(this.latlng).update();
-      }
-    });
-
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          this.latlng = [position.coords.latitude, position.coords.longitude];
-
-          if(this.init == null)
-          {
-                this.$emit("update:modelValue", this.latlng);
-          }
-          this.currentPosMarker = L.marker(this.latlng, {
-            icon: this.redIcon,
-          }).addTo(this.map);
-        });
-
-       this.map.setView(this.latlng,10); //centre la carte sur le point
-
-    }
-    //cas update
-   if(this.init)
-   {
-       this.latlng = [this.init[0], this.init[1]];
-
-       //set focus ?
-        this.marker = L.marker(this.latlng, {
-          icon: this.greenIcon,
-        }).addTo(this.map);
-
-        this.map.setView(this.latlng,10); //centre la carte sur le point
-
-   }
+    this.buildMap();
+    this.addClickListener();
+    this.getLocation();
+    this.checkUpdate();
   },
   onBeforeUnmount() {
     if (this.map) {
       this.map.remove();
     }
   },
-  methods: {},
+  methods: {
+    /*
+     * build the map
+     */
+    buildMap() {
+      this.map = L.map("mapContainer");
+      this.map.addControl(
+        new L.Control.Search({
+          url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
+          jsonpParam: "json_callback",
+          propertyName: "display_name",
+          propertyLoc: ["lat", "lon"],
+          marker: L.circleMarker([0, 0], { radius: 30 }),
+          autoCollapse: true,
+          autoType: true,
+          minLength: 2,
+        })
+      );
+      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this.map);
+    },
+    /*
+     * add a click listener to choose the memory position
+     */
+    addClickListener() {
+      this.map.on("click", (e) => {
+        this.latlng = [e.latlng.lat, e.latlng.lng]; //get the position of the click
+        this.$emit("update:modelValue", this.latlng); //update parent data
+        if (this.marker == null) {
+          //if the user hasn't had a previous position
+          //add a green marker to indicate the position
+          this.marker = L.marker(this.latlng, {
+            icon: this.greenIcon,
+          }).addTo(this.map);
+        } else {
+          this.marker.setLatLng(this.latlng).update(); //if the marker already exist update its pos
+        }
+      });
+    },
+    /*
+     * get location and add a marker on the map
+     */
+    getLocation() {
+      //center the map on the user position
+      this.map.locate({
+        setView: true,
+        maxZoom: 10,
+        enableHighAccuracy: true,
+      });
+
+      //if the user have the geolcation
+      if (navigator.geolocation) {
+          //find the curent position
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.latlng = [position.coords.latitude, position.coords.longitude];
+          if (this.init == null) {
+            this.$emit("update:modelValue", this.latlng); //indicate to the parent the current pos
+          }
+          //add a red marker to indicate the current pos
+          this.currentPosMarker = L.marker(this.latlng, {
+            icon: this.redIcon,
+          }).addTo(this.map);
+        });
+      }
+    },
+    /*
+     * check if the view is a update view
+     */
+    checkUpdate() {
+      //if we got data
+      if (this.init != null) {
+        this.latlng = [this.init[0], this.init[1]]; //save the memory pos
+
+        //add a green marker for the position
+        this.marker = L.marker(this.latlng, {
+          icon: this.greenIcon,
+        }).addTo(this.map);
+
+        //center the map on the marker
+        this.map.setView(this.latlng, 10);
+      }
+    },
+  },
 };
 </script>
 

@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            //to inform user for result actions
             'flash' => [
                 'success' => fn() => $request->session()->pull('success'),
                 'warning' => fn() => $request->session()->pull('warning'),

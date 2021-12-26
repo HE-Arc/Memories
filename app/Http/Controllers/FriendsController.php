@@ -7,6 +7,8 @@ use App\Models\Friends;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Searchable\Search;
+use Illuminate\Support\Facades\Gate;
+
 
 class FriendsController extends Controller
 {
@@ -119,7 +121,20 @@ class FriendsController extends Controller
     public function destroy($id)
     {
         //check if the friendship exist and delete
-        Friends::where("friend_id",$id)->where("user_id",auth()->id())->delete();
+        $myId = auth()->id();
+
+        //get friendhsip
+        $friend = Friends::whereUserId($id)->whereFriendId($myId)
+            ->orWhere('user_id','=',$myId)->whereFriendId($id)
+            ->firstOrFail();
+
+        //check if the user is authorized to access the friendship
+        if (!Gate::allows('friendship-owner', $friend)) {
+            abort(403);
+        }
+
+        //delete it
+        $friend->delete();
 
         return redirect()->route('friends.index')
                         ->with('success','Friends deleted successfully');
@@ -133,10 +148,24 @@ class FriendsController extends Controller
      */
     public function search(Request $request)
     {
+        //search a user containing the input name
         $results = (new Search())
             ->registerModel(User::class, ['name'])
             ->search($request->input('name'));
 
+        return response()->json($results);
+    }
+
+    /**
+     * Count asking request for the current user
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function count(Request $request)
+    {
+        //search a user containing the input name
+        $results = Friends::newRequest();
         return response()->json($results);
     }
 }

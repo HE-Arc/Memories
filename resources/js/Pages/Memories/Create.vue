@@ -50,7 +50,7 @@
                   </div>
                 </div><br>
                 <label>Choose a location :</label>
-                <CustomMap v-model="form.latlng"/>
+                <CustomMap v-model="form.latlng" :init="null"/>
 
                 <breeze-validation-errors class="mt-3" />
 

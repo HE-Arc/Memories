@@ -34,6 +34,11 @@ Route::get('friends/search', [FriendsController::class, 'search'])
     ->middleware(['auth', 'verified'])
     ->name('friends.search');
 
+Route::get('friends/count', [FriendsController::class, 'count'])
+    ->middleware(['auth', 'verified'])
+    ->name('friends.count');
+
+
 Route::resource('/friends',FriendsController::class)
     ->middleware(['auth', 'verified']);
 

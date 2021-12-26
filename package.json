@@ -15,7 +15,8 @@
     "leaflet-search": "^3.0.2",
     "vue-agile": "^2.0.0",
     "vue-moment": "^4.1.0",
-    "vue3-editor": "^0.1.0-alpha.3"
+    "vue3-editor": "^0.1.0-alpha.3",
+    "vue3-simple-alert": "^1.0.4"
   },
   "devDependencies": {
     "@inertiajs/inertia": "^0.10.0",

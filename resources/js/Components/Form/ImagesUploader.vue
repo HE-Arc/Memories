@@ -30,30 +30,44 @@ export default {
   },
 
   methods: {
+    /*
+    * reset input file when the user click to upload new file
+    */
     reset()
     {
-        this.$parent.path = "salut";
+        this.$parent.path = "";
         this.$refs.files.value=null;
         this.files = [];
         this.upload_state = "";
     },
+    /*
+    *prepare the request to send the file to the server
+    */
     handleFiles() {
-      let uploadedFiles = this.$refs.files.files;
+      let uploadedFiles = this.$refs.files.files; //get all files
 
+      //add them to the content to send to the server
       for (var i = 0; i < uploadedFiles.length; i++) {
         this.files.push(uploadedFiles[i]);
       }
     },
-    submitFiles() {
+
+    /*
+    * send the pictures to the servers
+    */
+    async submitFiles() {
+        //foreach files to uplad
       for (let i = 0; i < this.files.length; i++) {
         if (this.files[i].id) {
           continue;
         }
+        //prepare the request with the file and the memory id
         let formData = new FormData();
         formData.append("file", this.files[i]);
         formData.append("id", this.id);
 
-        axios
+        //send the data to the server
+        await axios
           .post(route("memorypictures.store"), formData, {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -61,12 +75,14 @@ export default {
           })
           .then(
             function (data) {
+                //when we got an answer, show a flash succes and update pictures in the views
                this.upload_state = "UPLOAD_SUCCES";
                this.$emit('updateData', data.data)
 
             }.bind(this)
           )
           .catch(function (data) {
+              //if a error append show a message to the user
                this.upload_state = "UPLOAD_FAIL";
           }.bind(this));
 

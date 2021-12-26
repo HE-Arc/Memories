@@ -3,7 +3,7 @@
     <agile autoplay autoplaySpeed="5000" :initial-slide="0">
       <img  v-for="picture in this.pictures" :key="picture.id"
         class="slide"
-        :src="'/storage/' + user_id + '/' + picture.memory_id + '/'  + picture.picture_name"
+        :src="`/storage/${user_id}/${picture.memory_id}/${picture.picture_name}`"
       >
     </agile>
   </div>

@@ -87,8 +87,8 @@ export default {
 
 },
   methods: {
-      searchMembers() {
-        axios.get('friends/search', { params: { name: this.form.name } })
+      async searchMembers() {
+        await axios.get(route('friends.search'), { params: { name: this.form.name } })
         .then(response => this.results = response.data)
         .catch(error => {});
       },

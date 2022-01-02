@@ -3,12 +3,12 @@
     <div class="container justify-content-center align-items-center">
       <div class="friends-card">
         <div class="upper">
-          <img src="https://i.imgur.com/Qtrsrk5.jpg" class="img-fluid" />
+          <img src="/storage/userBackground.jpg" class="img-fluid" />
         </div>
         <div class="user text-center">
           <div class="profile">
             <img
-              src="https://i.imgur.com/JgYD2nQ.jpg"
+              src="/storage/userLogo.png"
               class="rounded-circle"
               width="80"
             />

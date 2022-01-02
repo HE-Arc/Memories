@@ -3,6 +3,7 @@
   <label for="formFile" class="form-label">Upload your memories</label>
   <input class="form-control" type="file"
       id="files"
+      accept="image/*"
       ref="files"
       multiple
       v-on:click="reset()"

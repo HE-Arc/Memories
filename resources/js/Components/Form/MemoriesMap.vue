@@ -1,6 +1,14 @@
 <template>
   <div class="row soft-padding margin-zero">
     <div class="container border-solid-black" id="mapContainer"></div>
+    <div class="container border-solid-black">
+        Legend :
+        Current position : &nbsp;<i class="fa fa-home"></i>&nbsp;,&nbsp;
+        My memories : &nbsp;<i class="fa fa-user"></i>&nbsp;,&nbsp;
+        Friends : &nbsp;<i class="fa fa-users"></i>&nbsp;,&nbsp;
+        Public : &nbsp;<i class="fa fa-globe"></i>
+     </div>
+
   </div>
 </template>
 
@@ -9,7 +17,11 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import LeafletSearch from "leaflet-search";
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3"
+import 'leaflet.awesome-markers';
+
+L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+
 
 export default {
   name: "MemoriesMap",
@@ -27,45 +39,21 @@ export default {
         "<img class='miniImg' src='/storage/default.jpg' alt='default.jpg'/><br><br>",
       imgPath: "",
       //https://github.com/pointhi/leaflet-color-markers
-      greenIcon: new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
+      myMarker: new L.AwesomeMarkers.icon({
+        markerColor: 'black',
+        icon : 'user'
       }),
-      redIcon: new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
+        publicMarker: new L.AwesomeMarkers.icon({
+        icon: 'globe',
+        markerColor: 'blue',
       }),
-      violetIcon: new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
+      userFriendsMarker : new L.AwesomeMarkers.icon({
+        icon: 'users',
+        markerColor: 'green',
       }),
-      blackIcon: new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
+       homeMarker : new L.AwesomeMarkers.icon({
+        icon: 'home',
+        markerColor: 'red',
       }),
     };
   },
@@ -84,7 +72,7 @@ export default {
     initMap() {
       this.map = L.map("mapContainer");
 
-        //add control to search a place on the map
+      //add control to search a place on the map
       this.map.addControl(
         new L.Control.Search({
           url: "https://nominatim.openstreetmap.org/search?format=json&q={s}",
@@ -105,53 +93,53 @@ export default {
 
       //if the user have geolocation
       if (navigator.geolocation) {
-          //get the user curent position
+        //get the user curent position
         navigator.geolocation.getCurrentPosition((position) => {
           this.latlng = [position.coords.latitude, position.coords.longitude];
           this.map.setView(this.latlng, 10); //center the map on the current pos
-          //add a red marker to identify the current position on the map
+          //add a homeMarker to identify the current position on the map
           this.currentPosMarker = L.marker(this.latlng, {
-            icon: this.redIcon,
+            icon: this.homeMarker,
           }).addTo(this.map);
         });
       }
     },
     /*
-    *add all friends memories in the map
-    */
+     *add all friends memories in the map
+     */
     addMemoriesFriends() {
       //foreach friends
       this.memoriesFriends.forEach((friend) => {
         //foreach memory's friend
         friend.memories_and_pictures_protected.forEach((memory) => {
-            //add a violet marker on the map
-          this.drawMarker(memory, friend, this.violetIcon);
+          //add a userFriendsMarker on the map
+          this.drawMarker(memory, friend, this.userFriendsMarker);
         });
       });
     },
     /*
-    *add all public memories in the map
-    */
+     *add all public memories in the map
+     */
     addPublicMemories() {
       //foreach memories
       this.publicMemories.forEach((memory) => {
-        //add green marker
-        this.drawMarker(memory, memory.user, this.greenIcon);
+        //add publicMarker marker
+        this.drawMarker(memory, memory.user, this.publicMarker);
       });
     },
     /*
-    *add all user memories in the map
-    */
+     *add all user memories in the map
+     */
     addMyMemories() {
       //foreach memories
       this.myMemories.data.forEach((memory) => {
-        //add black marker
-        this.drawMarker(memory, this.currentUser, this.blackIcon);
+        //add myMarker
+        this.drawMarker(memory, this.currentUser, this.myMarker);
       });
     },
     /*
-    * draw a marker on the map
-    */
+     * draw a marker on the map
+     */
     drawMarker(memory, user, icon) {
       //find position in memory
       var pos = [
@@ -173,10 +161,10 @@ export default {
       }
 
       //add popup to marker
-        //memory name
-        //user name
-        //image
-        //link to show memory
+      //memory name
+      //user name
+      //image
+      //link to show memory
       mark.bindPopup(
         `<h5>${memory.name}</h5>
                <i>Author : ${user.name}</i><br>
@@ -217,4 +205,5 @@ img.miniImg {
   height: 45vh;
 }
 @import "~leaflet-search/src/leaflet-search.css";
+@import "~leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
 </style>

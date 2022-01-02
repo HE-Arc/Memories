@@ -25,6 +25,8 @@ class AddMemoryPublishedMember extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('memories', function (Blueprint $table) {
+            $table->dropColumn('publishing');
+        });
     }
 }

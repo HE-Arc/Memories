@@ -9,6 +9,10 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import LeafletSearch from "leaflet-search";
+import 'leaflet.awesome-markers';
+
+L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+
 export default {
   name: "LeafletMap",
   components: {},
@@ -20,26 +24,13 @@ export default {
       marker: null,
       currentPosMarker: null,
       latlng: null,
-      //https://github.com/pointhi/leaflet-color-markers
-      greenIcon: new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
+      homeMarker : new L.AwesomeMarkers.icon({
+        icon: 'home',
+        markerColor: 'red',
       }),
-      redIcon: new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
+      clickMarker : new L.AwesomeMarkers.icon({
+        icon: 'map-pin',
+        markerColor: 'green',
       }),
     };
   },
@@ -88,7 +79,7 @@ export default {
           //if the user hasn't had a previous position
           //add a green marker to indicate the position
           this.marker = L.marker(this.latlng, {
-            icon: this.greenIcon,
+            icon: this.clickMarker,
           }).addTo(this.map);
         } else {
           this.marker.setLatLng(this.latlng).update(); //if the marker already exist update its pos
@@ -116,7 +107,7 @@ export default {
           }
           //add a red marker to indicate the current pos
           this.currentPosMarker = L.marker(this.latlng, {
-            icon: this.redIcon,
+            icon: this.homeMarker,
           }).addTo(this.map);
         });
       }
@@ -148,4 +139,6 @@ export default {
   height: 45vh;
 }
 @import "~leaflet-search/src/leaflet-search.css";
+@import "~leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
+
 </style>

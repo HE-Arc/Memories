@@ -156,7 +156,7 @@ class MemoryController extends Controller
         $memoryOld->save();
 
         return redirect()->route('memories.show',['memory' => $memoryOld])
-                    ->with('success','Memory deleted successfully');
+                    ->with('success','Memory updated successfully');
                 }
 
     /**

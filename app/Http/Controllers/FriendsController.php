@@ -75,7 +75,7 @@ class FriendsController extends Controller
             $friendsShip = Friends::isFriend($userFriend->id,$user->id);
 
             //if we're not friends
-            if(empty($friendsShip))
+            if($friendsShip == null)
             {
                 //create a new request to be friend
                 $friend = new Friends();

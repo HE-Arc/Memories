@@ -1,9 +1,9 @@
 <template>
-  <Head title="Show a new Memory" />
+  <Head title="Show a Memory" />
 
   <breeze-authenticated-layout>
     <template #header>
-      <h2 class="h4 font-weight-bold">Show a new Memory</h2>
+      <h2 class="h4 font-weight-bold">Show a Memory</h2>
     </template>
 
     <Link :href="route('memories.index')" class="btn btn-info"
@@ -25,6 +25,7 @@
     <h1>{{ memory.name }}</h1>
     <p>Author : {{ memory.user.name }}</p>
     <p>Visited : {{ this.parseDate(memory.visited_date) }}</p>
+    <p>Publishing : {{ memory.publishing }}</p>
     <SlideShow
       v-if="memory.pictures"
       :pictures="this.memory.pictures"

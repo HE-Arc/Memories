@@ -88,7 +88,7 @@
 
     <!-- Page Content -->
     <main class="container my-5">
-      <FlashMessages :flash="$page.props.flash"/>
+      <FlashMessages/>
       <slot />
     </main>
   </div>

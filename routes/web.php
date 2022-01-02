@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\MemoryController;
+use App\Http\Controllers\MemoryPictureController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,14 +27,26 @@ Route::get('/', function () {
     ]);
 });
 
-Route::resource(
-    '/memories',
-    MemoryController::class
-)->middleware(['auth', 'verified']);
+Route::resource('/memories',MemoryController::class)
+    ->middleware(['auth', 'verified']);
 
-Route::resource(
-    '/friends',
-    FriendsController::class
-)->middleware(['auth', 'verified']);
+Route::get('friends/search', [FriendsController::class, 'search'])
+    ->middleware(['auth', 'verified'])
+    ->name('friends.search');
+
+Route::get('friends/count', [FriendsController::class, 'count'])
+    ->middleware(['auth', 'verified'])
+    ->name('friends.count');
+
+
+Route::resource('/friends',FriendsController::class)
+    ->middleware(['auth', 'verified']);
+
+Route::post('memorypictures/order', [MemoryPictureController::class, 'order'])
+    ->middleware(['auth', 'verified'])
+    ->name('memorypictures.order');
+
+Route::resource('/memorypictures',MemoryPictureController::class)
+    ->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';

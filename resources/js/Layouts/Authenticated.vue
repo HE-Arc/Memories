@@ -1,6 +1,13 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom sticky-top">
+    <nav
+      class="
+        navbar navbar-expand-md navbar-light
+        bg-white
+        border-bottom
+        sticky-top
+      "
+    >
       <div class="container">
         <!-- Logo -->
         <a class="navbar-brand" href="/">
@@ -8,18 +15,33 @@
             <breeze-application-logo width="36" />
           </Link>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="{{ __('Toggle navigation') }}"
+        >
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <!-- Left Side Of Navbar -->
           <ul class="navbar-nav me-auto">
-            <breeze-nav-link :href="route('memories.index')" :active="route().current('memories.index')">
+            <breeze-nav-link
+              :href="route('memories.index')"
+              :active="route().current('memories.index')"
+            >
               Memories
             </breeze-nav-link>
-            <breeze-nav-link :href="route('friends.index')" :active="route().current('friends.index')">
+            <breeze-nav-link
+              :href="route('friends.index')"
+              :active="route().current('friends.index')"
+            >
               Friends
+              <span v-if="friendsCount > 0">&nbsp;[{{ friendsCount }}]</span>
             </breeze-nav-link>
           </ul>
 
@@ -30,8 +52,18 @@
               <template #trigger>
                 {{ $page.props.auth.user.name }}
 
-                <svg class="ms-2" width="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <svg
+                  class="ms-2"
+                  width="18"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               </template>
 
@@ -63,12 +95,13 @@
 </template>
 
 <script>
-import BreezeApplicationLogo from '@/Components/ApplicationLogo.vue'
-import BreezeDropdown from '@/Components/Dropdown.vue'
-import BreezeDropdownLink from '@/Components/DropdownLink.vue'
-import BreezeNavLink from '@/Components/NavLink.vue'
-import { Link } from '@inertiajs/inertia-vue3'
-import FlashMessages from '@/Components/Tools/FlashMessages.vue'
+import BreezeApplicationLogo from "@/Components/ApplicationLogo.vue";
+import BreezeDropdown from "@/Components/Dropdown.vue";
+import BreezeDropdownLink from "@/Components/DropdownLink.vue";
+import BreezeNavLink from "@/Components/NavLink.vue";
+import { Link } from "@inertiajs/inertia-vue3";
+import FlashMessages from "@/Components/Tools/FlashMessages.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
   components: {
@@ -77,19 +110,27 @@ export default {
     BreezeDropdownLink,
     BreezeNavLink,
     Link,
-    FlashMessages
+    FlashMessages,
   },
-
+  mounted: function () {
+      //check if we have a new friends request
+    window.setInterval( async () => {
+        await axios.get(route('friends.count'), {})
+        .then(response => this.friendsCount = response.data)
+        .catch(error => {});
+    }, 1000);
+  },
   data() {
     return {
       showingNavigationDropdown: false,
-    }
+      friendsCount: 0,
+    };
   },
 
   methods: {
     logout() {
       Inertia.post(route("logout"));
-    }
+    },
   },
-}
+};
 </script>

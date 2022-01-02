@@ -6,9 +6,7 @@
       <h2 class="h4 font-weight-bold">Add a new Memory</h2>
     </template>
 
-    <Link :href="route('memories.index')" class="btn btn-primary mb-2"
-      >Back</Link
-    >
+    <Link :href="route('memories.index')" class="btn btn-primary mb-2">Back</Link>
 
     <form @submit.prevent="form.post(route('memories.store'))">
       <div class="form-group row">
@@ -39,7 +37,7 @@
                   <div class="form-group col-12">
                     <label for="description">Description</label>
                     <vue-editor
-                      v-model="form.content"
+                      v-model="form.description"
                       :id="'description'"
                       :editorToolbar="customToolbar"
                     ></vue-editor>
@@ -52,7 +50,7 @@
                   </div>
                 </div><br>
                 <label>Choose a location :</label>
-                <CustomMap v-model="form.latlng"/>
+                <CustomMap v-model="form.latlng" :init="null"/>
 
                 <breeze-validation-errors class="mt-3" />
 
@@ -98,7 +96,7 @@ export default {
       form: useForm({
         name: null,
         visited_date: null,
-        content: null,
+        description: null,
         publishing: "private",
         latlng: null,
       }),

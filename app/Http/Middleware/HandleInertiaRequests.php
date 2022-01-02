@@ -37,11 +37,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            //to inform user for result actions
             'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'warning' => fn() => $request->session()->get('warning'),
-                'danger' => fn() => $request->session()->get('danger'),
-            ],
+                'success' => fn() => $request->session()->pull('success'),
+                'warning' => fn() => $request->session()->pull('warning'),
+                'danger' => fn() => $request->session()->pull('danger'),
+            ]
         ]);
     }
 }

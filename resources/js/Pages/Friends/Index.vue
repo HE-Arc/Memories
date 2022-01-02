@@ -1,75 +1,51 @@
 <template>
-    <Head title="Amis"/>
+    <Head title="Friends"/>
 
     <breeze-authenticated-layout>
         <template #header>
             <h2 class="h4 font-weight-bold">
-                Amis
+                Friends
             </h2>
         </template>
-        <!-- Page content here-->
 
         <h2>Nouvelle demande d'ami</h2>
-        <form @submit.prevent="form.post(route('friends.store'))">
-        <div class="form-group row">
-          <div class="card">
-            <div class="card-body">
-              <div class="form-row">
-                <div class="form-group col-12">
-                  <InputLabel
-                    v-model="form.name"
-                    :inputId="'name'"
-                    :labelText="'name'"
-                    :formError="form.errors.title"
-                  />
+
+        <div class="container h-100">
+            <div class="row h-100 justify-content-center align-items-center">
+                <div class="col-10 col-md-8 col-lg-6">
+                    <form @submit.prevent="form.post(route('friends.store'))" class="form-example">
+                      <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <InputLabel
+                                  v-model="form.name"
+                                  :inputId="'name'"
+                                  :labelText="'Name'"
+                                  :formError="form.errors.title"/>
+                                <ul class="list-group" v-if="results.length > 0 && form.name">
+                                  <li class="list-group-item list-group-item-action" v-for="result in results.slice(0,10)" :key="result.id">
+                                      <a class="custom-a" href="#" @click="addValueToInput(result.title)" v-text="result.title"></a>
+                                  </li>
+                                </ul>
+                            </div>
+                            <breeze-validation-errors class="mt-3"/>
+                            <button type="submit" class="btn btn-success btn-sm btn-custom" :disabled="form.processing">Add</button>
+                        </div>
+                      </div>
+                    </form>
                 </div>
-
-                <breeze-validation-errors class="mt-3" />
-
-                <button
-                  type="submit"
-                  class="btn btn-outline-success mt-4"
-                  :disabled="form.processing">
-                  Add
-                </button>
-              </div>
             </div>
-          </div>
         </div>
-    </form>
 
-        <h2>Mes amis</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Nom</th>
-                </tr>
-            </thead>
+        <div class="mb-4 row">
+            <h2>Mes Amis</h2>
+            <CardFriends v-for="friendConfirmed in friendsConfirmed" :key="friendConfirmed.id" :name="friendConfirmed.name" :id="friendConfirmed.id"/>
+        </div>
 
-            <tbody>
-                <tr v-for="friendConfirmed in friendsConfirmed" :key="friendConfirmed.id">
-                    <td>{{ friendConfirmed.name }}</td>
-                    <button @click="destroy(friendConfirmed.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>Demande en attente</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Nom</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr v-for="friendPending in friendsPending" :key="friendPending.id">
-                    <td>{{ friendPending.name }}</td>
-                    <button @click="update(friendPending.id)" class="btn btn-success"><i class="fa fa-plus-square"></i></button>
-                    <button @click="destroy(friendPending.id)" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                </tr>
-            </tbody>
-        </table>
+        <div class="mb-4 row">
+          <h2>Demande en attente</h2>
+          <CardFriends v-for="friendPending in friendsPending" :key="friendPending.id" :name="friendPending.name" :id="friendPending.id" :pending="true"/>
+        </div>
 
     </breeze-authenticated-layout>
 
@@ -81,6 +57,7 @@ import { Head, useForm, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from '@inertiajs/inertia'
 import InputLabel from "@/Components/Form/InputLabel.vue";
 import BreezeValidationErrors from "@/Components/ValidationErrors.vue";
+import CardFriends from '@/Pages/Memories/Tools/CardFriends.vue'
 
 export default {
   components: {
@@ -89,6 +66,7 @@ export default {
     Link,
     InputLabel,
     BreezeValidationErrors,
+    CardFriends
   },
     props: [
       "friendsConfirmed",
@@ -98,16 +76,33 @@ export default {
     return {
       form: useForm({
         name: null
-      })
+      }),
+      results: []
     };
   },
+  watch: {
+  'form.name': function (newVal, oldVal){
+        this.searchMembers();
+  },
+
+},
   methods: {
-      destroy(id) {
-          Inertia.delete(route('friends.destroy', id));
+      async searchMembers() {
+        await axios.get(route('friends.search'), { params: { name: this.form.name } })
+        .then(response => this.results = response.data)
+        .catch(error => {});
       },
-      update(id) {
-          Inertia.put(route('friends.update', id));
+      addValueToInput(username) {
+        this.form.name = username;
       },
   }
 }
 </script>
+<style>
+
+.custom-a{
+  text-decoration: none;
+  color: black;
+}
+
+</style>

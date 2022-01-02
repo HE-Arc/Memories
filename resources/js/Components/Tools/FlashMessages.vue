@@ -1,24 +1,17 @@
 <template>
     <div v-if="$page.props.flash.success" class="alert alert-success">
-        <p>
-            {{$page.props.flash.success}}
-        </p>
+        {{$page.props.flash.success}}
     </div>
     <div v-if="$page.props.flash.danger" class="alert alert-danger">
-        <p>
-            {{$page.props.flash.danger}}
-        </p>
+        {{$page.props.flash.danger}}
     </div>
-    <div v-if="$page.props.flash.warning" class="alert alert-success" role="alert">
-        <strong>Alert!</strong>  {{$page.props.flash.warning}}
-        <button class="btn float-right align-middle"><i class="fa fa-close"></i></button>
+    <div v-if="$page.props.flash.warning" class="alert alert-warning">
+        {{$page.props.flash.warning}}
     </div>
 </template>
 
-<style>
-div.alert button.btn {
-    position: absolute;
-    right: 1rem;
-    top: 0.5rem;
+<script>
+export default {
+
 }
-</style>
+</script>

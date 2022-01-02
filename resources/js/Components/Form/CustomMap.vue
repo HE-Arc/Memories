@@ -92,7 +92,7 @@ export default {
     getLocation() {
       //center the map on the user position
       this.map.locate({
-        setView: true,
+        setView: false,
         maxZoom: 10,
         enableHighAccuracy: true,
       });
@@ -104,6 +104,7 @@ export default {
           this.latlng = [position.coords.latitude, position.coords.longitude];
           if (this.init == null) {
             this.$emit("update:modelValue", this.latlng); //indicate to the parent the current pos
+            this.map.setView(this.latlng, 10);
           }
           //add a red marker to indicate the current pos
           this.currentPosMarker = L.marker(this.latlng, {
@@ -122,7 +123,7 @@ export default {
 
         //add a green marker for the position
         this.marker = L.marker(this.latlng, {
-          icon: this.greenIcon,
+          icon: this.clickMarker,
         }).addTo(this.map);
 
         //center the map on the marker

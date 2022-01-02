@@ -153,7 +153,7 @@ export default {
 
       //add image in picture if exist
       if (memory.pictures.length > 0) {
-        this.imgPath = `<img class='miniImg' src='/storage/${user.id}/${memory.id}/${memory.pictures[0].picture_name}' alt='${memory.pictures[0].picture_name}'/><br><br>`;
+        this.imgPath = `<img class='miniImg' src='/storage/${memory.user_id}/${memory.id}/${memory.pictures[0].picture_name}' alt='${memory.pictures[0].picture_name}'/><br><br>`;
       }
       //else default image
       else {

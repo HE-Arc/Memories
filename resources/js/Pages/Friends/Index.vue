@@ -23,9 +23,11 @@
                                   :labelText="'Name'"
                                   :formError="form.errors.title"/>
                                 <ul class="list-group" v-if="results.length > 0 && form.name">
-                                  <li class="list-group-item list-group-item-action" v-for="result in results.slice(0,10)" :key="result.id">
-                                      <a class="custom-a" href="#" @click="addValueToInput(result.title)" v-text="result.title"></a>
+                                    <a v-for="result in results.slice(0,10)" :key="result.id" class="custom-a" href="#" @click="addValueToInput(result.title)">
+                                  <li class="list-group-item list-group-item-action">
+                                     {{result.title}}
                                   </li>
+                                  </a>
                                 </ul>
                             </div>
                             <breeze-validation-errors class="mt-3"/>

@@ -29,7 +29,7 @@
     <SlideShow
       v-if="memory.pictures"
       :pictures="this.memory.pictures"
-      :user_id="this.auth.user.id"
+      :user_id="this.memory.user.id"
     /><br />
     <div id="confirm"></div>
 

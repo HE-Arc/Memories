@@ -47,6 +47,11 @@
       </div>
     </div>
   </div>
+  <footer id="sticky-footer" class="fixed-bottom flex-shrink-0 py-4 bg-white text-white-50">
+    <div class="container text-center">
+      <small class="text-dark">Copyright © 2021-2022 HE-Arc | Developped by David Oktay &amp; Ilyas Boillat</small>
+    </div>
+  </footer>
 </template>
 
 <script>

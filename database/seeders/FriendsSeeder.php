@@ -14,6 +14,7 @@ class FriendsSeeder extends Seeder
      */
     public function run()
     {
+        //seeder just to test friends feature
         DB::table('friends')->insert([
             [
                 'user_id' => 1,

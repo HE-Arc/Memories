@@ -14,6 +14,8 @@ class UpdateDescriptionColumnOnMemoryTable extends Migration
      */
     public function up()
     {
+        //update field description in memory table, because it was limited to 255 char
+        //we had to create a new migration, because we should never modify a migration
         Schema::table('memories', function (Blueprint $table) {
             $table->longText('description')->change();
         });

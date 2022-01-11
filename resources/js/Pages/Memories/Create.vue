@@ -100,6 +100,9 @@ export default {
         publishing: "private",
         latlng: null,
       }),
+      /*
+      * indicate what feature we autorize in our editor
+      */
       customToolbar: [
         [{ font: [] }],
         [{ header: [false, 1, 2, 3, 4, 5, 6] }],

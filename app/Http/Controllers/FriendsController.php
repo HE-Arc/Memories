@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 use Spatie\Searchable\Search;
 use Illuminate\Support\Facades\Gate;
 
-
+/**
+ * FriendsController
+ * Manage all the logic between views and model for friends feature
+ */
 class FriendsController extends Controller
 {
     /**
@@ -31,12 +34,13 @@ class FriendsController extends Controller
         //get asking friends request
         $friendsPending = $user->friendsPending;
 
+        //return the view with data
         return inertia('Friends/Index',compact('friendsConfirmed', 'friendsPending'));
     }
 
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created friendship in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -93,7 +97,7 @@ class FriendsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified friendship in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Friends  $friends
@@ -108,22 +112,23 @@ class FriendsController extends Controller
         $user->status = Status::CONFIRMED;
         $user->save();
 
+        //redirect to the view friend
         return redirect()->route('friends.index')
                         ->with('success','Friend accepted');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified friendship from storage.
      *
      * @param  \App\Models\Friends  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //check if the friendship exist and delete
+        //get the current user id
         $myId = auth()->id();
 
-        //get friendhsip
+        //check if the friendship exist
         $friend = Friends::whereUserId($id)->whereFriendId($myId)
             ->orWhere('user_id','=',$myId)->whereFriendId($id)
             ->firstOrFail();
@@ -136,6 +141,7 @@ class FriendsController extends Controller
         //delete it
         $friend->delete();
 
+        //redirect to the view friend
         return redirect()->route('friends.index')
                         ->with('success','Friends deleted successfully');
     }
@@ -153,11 +159,12 @@ class FriendsController extends Controller
             ->registerModel(User::class, ['name'])
             ->search($request->input('name'));
 
+        //return the data in a json syntax
         return response()->json($results);
     }
 
     /**
-     * Count asking request for the current user
+     * Count of many asking request exist for the current user
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -166,6 +173,8 @@ class FriendsController extends Controller
     {
         //search a user containing the input name
         $results = Friends::newRequest();
+
+        //return information to the view
         return response()->json($results);
     }
 }

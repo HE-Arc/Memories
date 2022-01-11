@@ -32,7 +32,7 @@ import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue'
 import { Head, Link } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
 import moment from 'moment'
-import Card from '@/Pages/Memories/Tools/Card.vue'
+import Card from '@/Components/Form/CardMemory.vue'
 import MemoriesMap from '@/Components/Form/MemoriesMap.vue'
 import Pagination from '@/Components/Pagination.vue'
 

@@ -20,6 +20,7 @@ class MemorySeeder extends Seeder
         $longitude = 20;
         $latitude = 40;
 
+        //seeder just to test memory feature
         DB::table('memories')->insert([
             [
                 'name' => "Voyage au bois du petit château",

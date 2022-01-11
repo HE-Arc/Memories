@@ -8,7 +8,7 @@
             </h2>
         </template>
 
-        <h2>Nouvelle demande d'ami</h2>
+        <h2>Add a new friend</h2>
 
         <div class="container h-100">
             <div class="row h-100 justify-content-center align-items-center">
@@ -40,12 +40,12 @@
         </div>
 
         <div class="mb-4 row">
-            <h2>Mes Amis</h2>
+            <h2>My friends</h2>
             <CardFriends v-for="friendConfirmed in friendsConfirmed" :key="friendConfirmed.id" :name="friendConfirmed.name" :id="friendConfirmed.id"/>
         </div>
 
         <div class="mb-4 row">
-          <h2>Demande en attente</h2>
+          <h2>Pending request</h2>
           <CardFriends v-for="friendPending in friendsPending" :key="friendPending.id" :name="friendPending.name" :id="friendPending.id" :pending="true"/>
         </div>
 
@@ -59,7 +59,7 @@ import { Head, useForm, Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from '@inertiajs/inertia'
 import InputLabel from "@/Components/Form/InputLabel.vue";
 import BreezeValidationErrors from "@/Components/ValidationErrors.vue";
-import CardFriends from '@/Pages/Memories/Tools/CardFriends.vue'
+import CardFriends from '@/Components/Form/CardFriends.vue'
 
 export default {
   components: {
@@ -89,11 +89,18 @@ export default {
 
 },
   methods: {
+      /*
+      * ask to the server all friends which contain the current name if the search field
+      * then show the result to the user
+      */
       async searchMembers() {
         await axios.get(route('friends.search'), { params: { name: this.form.name } })
         .then(response => this.results = response.data)
         .catch(error => {});
       },
+      /*
+      * when the user click on a friend name in the search list, add it to the input field
+      */
       addValueToInput(username) {
         this.form.name = username;
       },

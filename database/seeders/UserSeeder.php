@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        //seeder just to test user feature
         DB::table('users')->insert([
             [
                 'name' => 'admin',

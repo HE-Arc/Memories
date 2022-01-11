@@ -13,6 +13,11 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\Memory;
 
 
+/**
+ * User
+ * Model which represent a user
+ * implement searchable to find user by name in the friends view
+ */
 class User extends Authenticatable implements Searchable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -54,17 +59,25 @@ class User extends Authenticatable implements Searchable
         return $this->hasMany(Memory::class);
     }
 
+    /**
+     * return all memories pictures of the current user
+     */
     public function memoriesPictures()
     {
         return $this->hasManyThrough(MemoryPicture::class, Memory::class);
     }
 
+    /**
+     * return all memories with pictures of the current user
+     */
     public function memoriesAndPictures()
     {
         return Memory::with('pictures')->where('user_id',$this->id)->latest()->paginate(6);
     }
 
-    // friendship that this user started
+    /*
+    * return all friendship that this user started
+    */
     public function friendsOfThisUser()
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id')
@@ -72,7 +85,9 @@ class User extends Authenticatable implements Searchable
 		->wherePivot('status', 'confirmed');
     }
 
-    // friendship that this user was asked for
+    /*
+    * return all friendship that this user was asked for
+    */
 	public function thisUserFriendOf()
 	{
 		return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')
@@ -90,17 +105,26 @@ class User extends Authenticatable implements Searchable
 		->wherePivot('status', 'pending');
     }
 
+    /*
+    * return all users containing name
+    */
     public function getSearchResult(): SearchResult
     {
         $url = route('friends.index', $this->id);
         return new SearchResult($this, $this->name, $url);
     }
 
+    /*
+    * return all memories and picture which are friends only
+    */
     public function memoriesAndPicturesProtected()
     {
         return $this->hasMany(Memory::class)->wherePublishing(Publishing::P_FRIENDS)->with('pictures');
     }
 
+    /*
+    * return all memories of my friends (this user has been invited by the friend)
+    */
     public function friendsMemoriesOfThisUser()
     {
        return $this
@@ -112,6 +136,9 @@ class User extends Authenticatable implements Searchable
 
     }
 
+    /*
+    * return all memories of my friends (this user has initiate the friendship)
+    */
     public function memoriesOfthisUserFriendOf()
 	{
 		return $this->belongsToMany(User::class, 'friends', 'friend_id', 'user_id')

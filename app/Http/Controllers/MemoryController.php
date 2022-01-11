@@ -10,11 +10,14 @@ use Illuminate\Http\Request;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Support\Facades\Storage;
 
-
+/**
+ * MemoryController
+ * Manage all the logic between views and model for memory feature
+ */
 class MemoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of memories.
      *
      * @return \Illuminate\Http\Response
      */
@@ -24,7 +27,7 @@ class MemoryController extends Controller
         $id = auth()->id();
         $user = User::find($id);
 
-        //my memories
+        //get all memories with pictures of this user
         $memories = $user->memoriesAndPictures();
 
         //friends'memories
@@ -35,21 +38,23 @@ class MemoryController extends Controller
         //public memories
         $publicMemories = Memory::publicMemories();
 
+        //return all memories to the views
         return inertia('Memories/Index',compact('id','memories','memoriesFriends','publicMemories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new memory.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
+       //return the create view
        return inertia('Memories/Create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created memory in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -64,7 +69,7 @@ class MemoryController extends Controller
             'publishing' => 'required|in:private,public,friends-only'
         ]);
 
-        //find current user
+        //find the current user
         $userid = $request->user()->id;
 
         //build and store new memories from request data
@@ -85,7 +90,7 @@ class MemoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified memory.
      *
      * @param  \App\Models\Memory  $id
      * @return \Illuminate\Http\Response
@@ -100,13 +105,14 @@ class MemoryController extends Controller
             abort(403);
         }
 
+        //return the view with data
         return inertia('Memories/Show',compact('memory')) ;
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified memory.
      *
-     * @param  \App\Models\Memory  $memory
+     * @param  $id memory's id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -119,14 +125,15 @@ class MemoryController extends Controller
             abort(403);
         }
 
+        //return the view with data
         return inertia('Memories/Edit',compact('memory')) ;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified memory in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Memory  $id
+     * @param  \App\Models\Memory  memory to update
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Memory $memory)
@@ -142,7 +149,7 @@ class MemoryController extends Controller
         //check if the memory exists in the database
         $memoryOld = Memory::findOrFail($memory->id);
 
-        //check if the user is authorized to access the memory
+        //check if the user is authorized to update the memory (only owner)
         if (!Gate::allows('memory-owner', $memoryOld)) {
             abort(403);
         }
@@ -155,14 +162,15 @@ class MemoryController extends Controller
         $memoryOld->publishing = $request->publishing;
         $memoryOld->save();
 
+        //redirect the view with the memory updated
         return redirect()->route('memories.show',['memory' => $memoryOld])
                     ->with('success','Memory updated successfully');
                 }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified memory from storage.
      *
-     * @param  \App\Models\Memory  $memory
+     * @param  $id memory's id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -170,18 +178,19 @@ class MemoryController extends Controller
         //check if the memory exists in the database
         $memory = Memory::findOrFail($id);
 
-        //check if the user is authorized to access the memory
+        //check if the user is authorized to delete the memory (only owner)
         if (!Gate::allows('memory-owner', $memory)) {
             abort(403);
         }
 
-        //delete potential images from the server
+        //delete potential images from the server (clean, we don't want to keep useless files)
         $src = "public/" . auth()->id() .'/'. $memory->id;
         Storage::deleteDirectory($src);
 
         //delete the memory
         $memory->delete();
 
+        //redirect to the memories list
         return redirect()->route('memories.index')
                         ->with('success','Memory deleted successfully');
 

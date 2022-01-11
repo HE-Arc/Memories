@@ -22,10 +22,10 @@ export default {
 </script>
 
 <style lang="scss">
-//todo remove ?
 @import url("https://unpkg.com/vue-agile@latest/dist/VueAgile.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css");
 
+/* source : https://lukaszflorczak.github.io/vue-agile/*/
 .agile {
   &__nav-button {
     background: transparent;

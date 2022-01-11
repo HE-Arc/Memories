@@ -13,6 +13,9 @@ class AddForeignKeyOnMemoryPicturesTable extends Migration
      */
     public function up()
     {
+        //add relation for memory_picture
+        //each memory_picture is associate to 1 memory, 1 memory can have many pictures
+        //if we delete a memory, delete each pictures on cascade
         Schema::table('memory_pictures', function (Blueprint $table) {
             $table->foreignId('memory_id')->constrained()->onDelete('cascade');
         });

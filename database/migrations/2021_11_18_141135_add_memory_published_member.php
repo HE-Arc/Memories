@@ -13,6 +13,12 @@ class AddMemoryPublishedMember extends Migration
      */
     public function up()
     {
+        //add a new field to the memories table
+        //we had to create a new migration, because we should never modify a migration
+        //this new field indicate the status of the memory :
+        //private --> only the memory's user can see it
+        //friends-only --> only the friends of this user and this user can see his memories
+        //public --> everybody can see our memories
         Schema::table('memories', function (Blueprint $table) {
             $table->enum('publishing', ['private', 'public', 'friends-only'])->default('private');
         });

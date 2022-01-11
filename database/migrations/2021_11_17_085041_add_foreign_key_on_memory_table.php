@@ -13,11 +13,12 @@ class AddForeignKeyOnMemoryTable extends Migration
      */
     public function up()
     {
-
+        //each memories is owned by a user
+        //a user has only 1 memory with the same name
+        //if a user is delete, we delete on cascade his memories
         Schema::table('memories', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unique(['name','user_id'],'uk1');
-
         });
     }
 

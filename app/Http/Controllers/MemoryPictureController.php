@@ -8,19 +8,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
 
-
+/**
+ * MemoryPictureController
+ * Manage all the logic between views and model for memory picture feature
+ */
 class MemoryPictureController extends Controller
 {
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created memoryPicture in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //validate format image
+        //check if the file format  i valid (only image)
         $request->validate([
             'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg',
         ]);
@@ -40,20 +43,20 @@ class MemoryPictureController extends Controller
         $filename = $file->getClientOriginalName(); //get filename
         $path = "public/" . $userid .'/'. $idMemory;
 
-        //store file
+        //store file in server
         $request->file('file')->storeAs($path, $filename);
 
         //save reference to the picture in database (via memory)
         $memoryPicture = new MemoryPicture();
         $memoryPicture->memory_id = $idMemory;
         $memoryPicture->picture_name = $filename;
-        $memoryPicture->order = $memory->pictures->count()+1;
+        $memoryPicture->order = $memory->pictures->count()+1; //new image = last image
         $memoryPicture->save();
 
         //actualise memory with new data
         $memory = Memory::findOrFail($idMemory);
 
-        //send to the view the images
+        //send to the view the images (path) of the memories in json format
         return response()->json([
             'success' => true,
             'path' => Storage::url($path).'/',
@@ -64,9 +67,9 @@ class MemoryPictureController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified memoryPicture from storage.
      *
-     * @param  \App\Models\MemoryPicture  $id
+     * @param  $id of the memory picture
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -95,9 +98,9 @@ class MemoryPictureController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the memoryPicture resource.
      *
-     * @param  \App\Models\Memory  $memory
+     * @param  $id memory's id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -111,7 +114,7 @@ class MemoryPictureController extends Controller
             abort(403);
         }
 
-        //send to the view memory with pictures their path
+        //send to the view memory with pictures and storage source
         $img = $memory->pictures;
         $userid = auth()->id();
         $src = "public/" . $userid .'/'. $memory->id . '/';
@@ -120,7 +123,7 @@ class MemoryPictureController extends Controller
         return inertia('Memories/Pictures',compact('memory','img','src')) ;
     }
 
-      /**
+    /**
      * Allow to swap the order between two pictures
      *
      * @param  \Illuminate\Http\Request  $request
@@ -139,17 +142,12 @@ class MemoryPictureController extends Controller
         $memoryPicture2 = MemoryPicture::findOrFail($request->id2);
 
         //check if user is allow to perform this opertation
-        if (!Gate::allows('memory-owner', $memoryPicture1->memory)) {
+        if (!Gate::allows('memory-owner', $memoryPicture1->memory) ||
+                !Gate::allows('memory-owner', $memoryPicture2->memory)) {
             abort(403);
         }
 
-
-        if (!Gate::allows('memory-owner', $memoryPicture2->memory)) {
-            abort(403);
-        }
-
-
-        //swap the order of the 2 pictures
+        //swap the order of the 2 pictures and save
         $tmp = $memoryPicture1->order;
         $memoryPicture1->order = $memoryPicture2->order;
         $memoryPicture2->order = $tmp;

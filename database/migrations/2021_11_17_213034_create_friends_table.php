@@ -13,6 +13,8 @@ class CreateFriendsTable extends Migration
      */
     public function up()
     {
+        //each friendship is associate with a status (pending or confirmed) to indicate if the friendship is
+        //accepted or not yet
         Schema::create('friends', function (Blueprint $table) {
             $table->id();
             $table->enum('status', ['pending', 'confirmed'])->default('pending');

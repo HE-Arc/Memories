@@ -5,6 +5,7 @@ namespace App\Enums;
 use BenSampo\Enum\Enum;
 
 /**
+ * Enum to indicate the current state of a friendship
  * @method PENDING : user not accepted
  * @method CONFIRMED : user accepted
  */

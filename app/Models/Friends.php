@@ -6,12 +6,18 @@ use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Friends
+ * Model which represent a friendhsip
+ * a friendship is defined by 2 users and a status (confirmed/pending)
+ * relation n-n
+ */
 class Friends extends Model
 {
     use HasFactory;
 
     /*
-    * check if a user is a friendship exist
+    * check if for a user, a friendship exist
     */
     public static function isFriend($id,$other_id){
         return Friends::where([

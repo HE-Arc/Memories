@@ -13,10 +13,13 @@ class CreateMemoryPicturesTable extends Migration
      */
     public function up()
     {
+        //new table to store the pictures of a memory
         Schema::create('memory_pictures', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('picture_name')->unique();
+            $table->string('picture_name')->unique(); //picture's name, unique because potential directory conflit
+
+            //order to indicate in the slideshow the order of the pictures, false -> not auto increment, true -> unsigned
             $table->integer('order', false, true);
         });
     }

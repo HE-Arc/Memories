@@ -71,6 +71,9 @@ export default {
     }
   },
   methods: {
+    /*
+    * update pictures when the user add new image
+    */
     updatePictures(data) {
       this.path = data.path;
       this.images = data.images;
@@ -78,29 +81,41 @@ export default {
     destroy(id) {
       VueSimpleAlert.confirm("Are you sure?")
         .then(async () => {
-          await axios.delete(route("memorypictures.destroy", id));
-          this.images = this.images.filter((image) => image.id !== id);
+          await axios.delete(route("memorypictures.destroy", id)); //ask to the server to delete this picture
+          this.images = this.images.filter((image) => image.id !== id); //eliminate this image from the list
         })
         .catch(() => {});
     },
+    /*
+    * shift a picture to the left only if we are not at the beginning
+    */
     shiftLeft(id) {
-      var idx = this.images.findIndex((img) => img.id == id);
+      var idx = this.images.findIndex((img) => img.id == id); //retrieve index of this image
       if (idx > 0) {
         this.swap(idx, idx - 1);
       }
     },
+    /*
+    * shift a picture to the right only if we are not at the end
+    */
     shiftRight(id) {
-      var idx = this.images.findIndex((img) => img.id == id);
+      var idx = this.images.findIndex((img) => img.id == id); //retrieve index of this image
       if (idx < this.images.length - 1) {
         this.swap(idx, idx + 1);
       }
     },
+
+    /*
+    *swap
+    * ask to the server to swap the order between to pictures
+    */
     async swap(idx1, idx2) {
       await axios.post(route("memorypictures.order"), {
         id1: this.images[idx1].id,
         id2: this.images[idx2].id,
       });
 
+      //change the order in the view
       var tmp = this.images[idx1];
       this.images[idx1] = this.images[idx2];
       this.images[idx2] = tmp;

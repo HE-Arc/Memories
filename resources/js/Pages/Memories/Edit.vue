@@ -95,7 +95,6 @@ export default {
     return {
       form: useForm({
         name: this.memory.name,
-       // visited_date: this.memory.visited_date,
         visited_date: moment(this.memory.visited_date).format('YYYY-MM-DD'),
         description: this.memory.description,
         publishing: this.memory.publishing,

@@ -41,7 +41,7 @@
               :active="route().current('friends.index')"
             >
               Friends
-              <span v-if="friendsCount > 0">&nbsp;[{{ friendsCount }}]</span>
+              <span v-if="$page.props.auth.user.name && friendsCount > 0">&nbsp;[{{ friendsCount }}]</span>
             </breeze-nav-link>
           </ul>
 
@@ -92,11 +92,6 @@
       <slot />
     </main>
   </div>
-   <footer id="sticky-footer" class="flex-shrink-0 py-4 bg-white text-white-50">
-    <div class="container text-center">
-      <small class="text-dark">Copyright © 2021-2022 HE-Arc | Developped by David Oktay &amp; Ilyas Boillat</small>
-    </div>
-  </footer>
 </template>
 
 <script>
